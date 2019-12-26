@@ -1,24 +1,26 @@
-var path = require('path');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var webpack = require('webpack');
+const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const webpack = require('webpack');
+
 module.exports = {
-  entry: './src/index.js',
-  target: "web",
+  entry: './src/index.jsx',
+  target: 'web',
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'index_bundle.js'
+    filename: 'index_bundle.js',
   },
   module: {
-    rules: [{
-        test: /\.(js)$/,
+    rules: [
+      {
+        test: /\.(jsx)$/,
         exclude: /node_modules/,
-        loader: 'babel-loader'
+        loader: 'babel-loader',
       },
       {
         test: /\.scss$/,
-        loader: 'style-loader!css-loader!sass-loader'
-      }
-    ]
+        loader: 'style-loader!css-loader!sass-loader',
+      },
+    ],
   },
   mode: 'production',
   plugins: [
@@ -27,7 +29,7 @@ module.exports = {
     }),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
-      debug: false
-    })
-  ]
+      debug: false,
+    }),
+  ],
 };

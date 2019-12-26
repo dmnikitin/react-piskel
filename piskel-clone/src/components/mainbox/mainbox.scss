@@ -1,0 +1,7 @@
+.mainbox {
+  height: 100%;
+  display: grid;
+  grid-template: 50% 50% / 10% 75% 15%;
+  grid-template-areas: 'framebox canvas preview'
+    'framebox canvas toolbox';
+}
