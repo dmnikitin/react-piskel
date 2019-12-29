@@ -1,13 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { colors } from '../../../assets/data';
+import { colors, tools, mouseEvents } from '../../../assets/data';
 import './canvas.scss';
+import { setUpdatedFrame } from '../../../state/ac/frames';
 
 // get screen width => canvas h/w
-// matrix to LS => [0, 1, 1, 0];
-// on unmount => create Array with colors;
+// const LSArray = parts.map((val) => val.color).reduce((a,b) => a.concat(b)));
 
-function createMatrix(matrixLength, matrix = []) {
+const createMatrix = (matrixLength, matrix = []) => {
   const modifiedArray = Array.from({ length: matrixLength }, (val, ind) =>
     Array.from({ length: matrixLength }, (newVal, index) => ({
       id: ind * matrixLength + index,
@@ -17,92 +17,177 @@ function createMatrix(matrixLength, matrix = []) {
     }))
   );
   return modifiedArray.reduce((a, b) => a.concat(b));
-}
-
-const drawBackground = (ctx, canvas) => {
-  const logoImg = new Image();
-  logoImg.onload = () => {
-    const originalWidth = logoImg.width;
-    logoImg.width = Math.round((50 * document.body.clientWidth) / 100);
-    logoImg.height = Math.round((logoImg.width * logoImg.height) / originalWidth);
-    const logo = {
-      img: logoImg,
-      x: canvas.width / 2 - logoImg.width / 2,
-      y: canvas.height / 2 - logoImg.height / 2,
-    };
-    ctx.drawImage(logo.img, logo.x, logo.y, logo.img.width, logo.img.height);
-  };
-  logoImg.src = './assets/bcgr.jpg';
-  logoImg.crossOrigin = '';
-  return logoImg;
 };
 
-const drawOnCanvas = (ctx, place, color = colors[0]) => {
+let updatedFrames;
+
+const drawOnCanvas = (ctx, place, color = colors[0], frames) => {
   const minX = place.width * place.place.column;
   const minY = place.width * place.place.row;
   const element = place;
   element.color = color;
   ctx.fillStyle = color;
-  console.log(minX, minY, element.width, element.width);
+  ctx.clearRect(minX, minY, element.width, element.width);
   ctx.fillRect(minX, minY, element.width, element.width);
-  // return element;
+  if (frames) {
+    updatedFrames = frames.map((frame) => {
+      if (frame.id === element.id) {
+        return element;
+      }
+      return frame;
+    });
+  }
 };
 
 function Canvas(props) {
-  let switcher = false;
-  let mouseDownSwitcher = false;
-  const { primaryColor, alternativeColor, penSize, activeTool, matrixLength } = props;
+  let isSwitched = false;
+  let isMouseDownSwitched = false;
+  const {
+    primaryColor,
+    alternativeColor,
+    penSize,
+    activeTool,
+    matrixLength,
+    onSetUpdatedFrame,
+  } = props;
   const canvasRef = React.useRef(null);
+
   const [parts, changeData] = React.useState([]);
 
   const getCtxFromRef = () => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
-    return { canvas, ctx };
+    return ctx;
   };
 
   React.useEffect(() => {
-    const { ctx, canvas } = getCtxFromRef();
-    drawBackground(ctx, canvas);
+    const ctx = getCtxFromRef();
     const extendedMatrix = createMatrix(matrixLength);
-    extendedMatrix.forEach((current) => drawOnCanvas(ctx, current, current.color));
+    extendedMatrix.forEach((curr) => drawOnCanvas(ctx, curr, curr.color));
     changeData(extendedMatrix);
+    updatedFrames = [...extendedMatrix];
+    onSetUpdatedFrame(0, extendedMatrix);
   }, []);
 
-  const pen = (e) => {
-    const { ctx } = getCtxFromRef();
+  const usePen = (e, ctx, color = colors[0]) => {
     parts.forEach((part) => {
       const minX = part.width * part.place.column;
       const minY = part.width * part.place.row;
       const maxX = part.width * part.place.column + part.width;
       const maxY = part.width * part.place.row + part.width;
       if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
-        if (primaryColor !== part.color) {
-          // const modifiedPart = part;
-          // modifiedPart.color = primaryColor;
-          drawOnCanvas(ctx, part, primaryColor);
+        if (e.button === 2) {
+          drawOnCanvas(ctx, part, color, parts);
+        } else if (e.button === 0) {
+          drawOnCanvas(ctx, part, color, parts);
         }
+        // drawOnCanvas(ctx, part, e.button ? alternativeColor : primaryColor, parts);
       }
     });
   };
 
+  const useStroke = (e, ctx) => {};
+
+  const useColorPicker = (e, ctx) => {};
+
+  const useAllToOneColor = (e, ctx) => {};
+
+  const useBucket = (e, ctx) => {
+    const bucketList = [];
+
+    const addToBucket = (part) => {
+      parts.forEach((val) => {
+        if (val.id === part.id) {
+          const adjacent = [];
+          const row = Math.floor(val.id / matrixLength);
+          const column = val.id % matrixLength;
+          if (column > 0) adjacent.push(parts[row * matrixLength + column - 1].id);
+          if (row > 0) adjacent.push(parts[(row - 1) * matrixLength + column].id);
+          if (row <= matrixLength - 2) adjacent.push(parts[(row + 1) * matrixLength + column].id);
+          if (column <= matrixLength - 2) adjacent.push(parts[row * matrixLength + column + 1].id);
+          adjacent.forEach((pixel) => {
+            if (bucketList.indexOf(parts[pixel]) < 0 && parts[pixel].color === part.color) {
+              bucketList.push(parts[pixel]);
+              addToBucket(parts[pixel]);
+            }
+          });
+        }
+      });
+    };
+
+    parts.forEach((val) => {
+      const part = val;
+      part.minX = part.width * part.place.column;
+      part.minY = part.width * part.place.row;
+      part.maxX = part.width * part.place.column + part.width;
+      part.maxY = part.width * part.place.row + part.width;
+      if (
+        e.layerX >= part.minX &&
+        e.layerX < part.maxX &&
+        e.layerY >= part.minY &&
+        e.layerY < part.maxY
+      ) {
+        if (primaryColor !== part.color) {
+          bucketList.push(part);
+          addToBucket(part);
+        }
+      }
+    });
+    bucketList.forEach((val) => drawOnCanvas(ctx, val, primaryColor, parts));
+  };
+
   const mouseAction = (e) => {
-    if (activeTool === 'pen') pen(e);
+    const ctx = getCtxFromRef();
+    switch (activeTool) {
+      case tools.pen: {
+        usePen(e, ctx, primaryColor);
+        break;
+      }
+      case tools.eraser: {
+        usePen(e, ctx);
+        break;
+      }
+      case tools.bucket: {
+        useBucket(e, ctx);
+        break;
+      }
+      case tools.colorPicker: {
+        useColorPicker(e, ctx);
+        break;
+      }
+      case tools.stroke: {
+        useStroke(e, ctx);
+        break;
+      }
+      case tools.allToOneColor: {
+        useAllToOneColor(e, ctx);
+        break;
+      }
+      default:
+        return null;
+    }
   };
 
   const mouseHandler = (e) => {
     const { nativeEvent } = e;
-    if (e.type === 'mousedown') {
-      switcher = true;
-      mouseDownSwitcher = true;
-      if (mouseDownSwitcher) {
+    if (e.type === mouseEvents.mousedown) {
+      isSwitched = true;
+      isMouseDownSwitched = true;
+      if (isMouseDownSwitched) {
         mouseAction(nativeEvent);
-        mouseDownSwitcher = false;
+        isMouseDownSwitched = false;
       }
     }
-    if (e.type === 'mouseup' || e.type === 'mouseout') switcher = false;
-    if (e.type === 'mousemove') {
-      if (switcher) mouseAction(nativeEvent);
+    if (e.type === mouseEvents.mouseup) {
+      isSwitched = false;
+      changeData(updatedFrames);
+      onSetUpdatedFrame(0, updatedFrames);
+    }
+    if (e.type === mouseEvents.mouseout) {
+      isSwitched = false;
+    }
+    if (e.type === mouseEvents.mousemove) {
+      if (isSwitched) mouseAction(nativeEvent);
     }
   };
 
@@ -110,8 +195,8 @@ function Canvas(props) {
     <div>
       <canvas
         ref={canvasRef}
-        width={500}
-        height={500}
+        width={512}
+        height={512}
         onMouseMove={mouseHandler}
         onMouseDown={mouseHandler}
         onMouseUp={mouseHandler}
@@ -122,64 +207,15 @@ function Canvas(props) {
   );
 }
 
-export default connect((state) => ({
-  primaryColor: state.tools.primaryColor,
-  alternativeColor: state.tools.alternativeColor,
-  activeTool: state.tools.activeTool,
-  penSize: state.tools.penSize,
-  matrixLength: 32,
-}))(Canvas);
-
-// const bucket = () => {
-//   const bucketList = [];
-//   const addToBucket = (part) => {
-//     for (let i = 0; i < matrixLength; i += 1) {
-//       for (let j = 0; j < matrixLength; j += 1) {
-//         if (extendedMatrix[i][j].id === part.id) {
-//           const adjacent = [];
-//           if (j > 0) adjacent.push(extendedMatrix[i][j - 1].id);
-//           if (i > 0) adjacent.push(extendedMatrix[i - 1][j].id);
-//           if (i <= matrixLength - 2) adjacent.push(extendedMatrix[i + 1][j].id);
-//           if (j <= matrixLength - 2) adjacent.push(extendedMatrix[i][j + 1].id);
-//           adjacent.forEach((e) => {
-//             if (bucketList.indexOf(parts[e]) < 0 && parts[e].color === part.color) {
-//               bucketList.push(parts[e]);
-//               addToBucket(parts[e]);
-//             }
-//           });
-//         }
-//       }
-//     }
-//   };
-
-//   parts.forEach((x) => {
-//     const part = x;
-//     part.minX = part.width * part.place.column;
-//     part.minY = part.width * part.place.row;
-//     part.maxX = part.width * part.place.column + part.width;
-//     part.maxY = part.width * part.place.row + part.width;
-//     if (event.layerX >= part.minX &&
-//       event.layerX < part.maxX &&
-//       event.layerY >= part.minY &&
-//       event.layerY < part.maxY) {
-//       if (colors[0] !== part.color) {
-//         bucketList.push(part);
-//         addToBucket(part);
-//       }
-//     }
-//   });
-//   bucketList.forEach((e) => drawOnCanvas(e, e.minX, e.minY));
-// }
-
-// this.sizeSwitcher.range.addEventListener('change', () => this.createCanvas(this.sizeSwitcher.value.textContent));
-
-// if (tool === 'color') {
-//   const pixel = this.ctx.getImageData(event.layerX, event.layerY, 1, 1);
-//   const {
-//     data,
-//   } = pixel;
-//   const rgb = `${data[0]}, ${data[1]}, ${data[2]}`;
-//   const current = colorsObj[rgb];
-//   const prev = colors[0] === current ? colors[1] : colors[0];
-//   this.colorPicker.setColor(prev, current);
-// }
+export default connect(
+  (state) => ({
+    primaryColor: state.tools.primaryColor,
+    alternativeColor: state.tools.alternativeColor,
+    activeTool: state.tools.activeTool,
+    penSize: state.tools.penSize,
+    matrixLength: 32,
+  }),
+  (dispatch) => ({
+    onSetUpdatedFrame: (frame, data) => dispatch(setUpdatedFrame(frame, data)),
+  })
+)(Canvas);

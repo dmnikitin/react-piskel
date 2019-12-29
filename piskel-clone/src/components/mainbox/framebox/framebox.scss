@@ -1,3 +1,6 @@
 .framebox {
   grid-area: framebox;
+
+  display: flex;
+  flex-direction: column;
 }

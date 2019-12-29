@@ -1,4 +1,4 @@
-import { createStore, applyMiddleware } from 'redux';
+import { createStore } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import { getFromLocalStorage } from '../helpers/localStorageHandler';
 import combined from './reducers/combined';

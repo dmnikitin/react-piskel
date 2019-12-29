@@ -12,12 +12,16 @@
 //   '255, 0, 0': colorsArray[3],
 // };
 
-// #000000
-// #
+const mouseEvents = {
+  mousedown: 'mousedown',
+  mouseup: 'mouseup',
+  mousemove: 'mousemove',
+  mouseout: 'mouseout',
+};
 
 const colors = {
-  0: 'rgba(0,0,0,0)',
-  1: 'rgba(0,0,0,1)',
+  0: '#e3e4e6',
+  1: '#000000',
 };
 
 const penSize = {
@@ -42,4 +46,4 @@ const active = {
   penSize: penSize[0],
 };
 
-export { colors, penSize, tools, active };
+export { colors, penSize, tools, active, mouseEvents };

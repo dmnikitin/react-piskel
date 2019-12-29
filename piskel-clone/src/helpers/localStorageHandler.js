@@ -8,9 +8,10 @@ const getFromLocalStorage = () => {
       return undefined;
     }
     if (!Object.prototype.hasOwnProperty.call(parsed, 'active')) storage.active = active;
-    if (!Object.prototype.hasOwnProperty.call(parsed, 'matrix')) storage.matrix = [];
-    if (!Object.prototype.hasOwnProperty.call(parsed, 'matrixLength')) storage.matrixLength = 32;
-    if (!Object.prototype.hasOwnProperty.call(parsed, 'image')) storage.image = null;
+    if (!Object.prototype.hasOwnProperty.call(parsed, 'frames')) storage.frames = { 0: [] };
+    // if (!Object.prototype.hasOwnProperty.call(parsed, 'matrix')) storage.matrix = [];
+    // if (!Object.prototype.hasOwnProperty.call(parsed, 'matrixLength')) storage.matrixLength = 32;
+    // if (!Object.prototype.hasOwnProperty.call(parsed, 'image')) storage.image = null;
     return storage;
   } catch (err) {
     return undefined;
