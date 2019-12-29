@@ -5,9 +5,9 @@ import {
   SET_PEN_SIZE,
 } from '../variables';
 
-import { toolsState } from '../../assets/data';
+import { active } from '../../assets/data';
 
-const ToolsReducer = (state = toolsState, action) => {
+const ToolsReducer = (state = active, action) => {
   const { type, payload } = action;
   switch (type) {
     case SET_ACTIVE_TOOL:

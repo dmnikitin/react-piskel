@@ -12,6 +12,9 @@
 //   '255, 0, 0': colorsArray[3],
 // };
 
+// #000000
+// #
+
 const colors = {
   0: 'rgba(0,0,0,0)',
   1: 'rgba(0,0,0,1)',
@@ -35,7 +38,7 @@ const tools = {
 const active = {
   primaryColor: colors[1],
   alternativeColor: colors[0],
-  currentTool: tools.pen,
+  activeTool: tools.pen,
   penSize: penSize[0],
 };
 
