@@ -22,6 +22,13 @@ const mouseEvents = {
 const colors = {
   0: '#e3e4e6',
   1: '#000000',
+  2: '#ffffff',
+  3: '#d61818',
+  4: '#13c219',
+  5: '#0249ba',
+  6: '#d5d900',
+  7: '#d98200',
+  8: '#760fbf',
 };
 
 const penSize = {

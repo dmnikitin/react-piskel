@@ -3,21 +3,9 @@ import { connect } from 'react-redux';
 import { colors, tools, mouseEvents } from '../../../assets/data';
 import './canvas.scss';
 import { setUpdatedFrame } from '../../../state/ac/frames';
-
+import { createMatrix } from '../../../helpers/canvas';
 // get screen width => canvas h/w
 // const LSArray = parts.map((val) => val.color).reduce((a,b) => a.concat(b)));
-
-const createMatrix = (matrixLength, matrix = []) => {
-  const modifiedArray = Array.from({ length: matrixLength }, (val, ind) =>
-    Array.from({ length: matrixLength }, (newVal, index) => ({
-      id: ind * matrixLength + index,
-      width: 512 / matrixLength,
-      place: { row: ind, column: index },
-      color: matrix.length ? matrix[ind * matrixLength + index] : colors[0],
-    }))
-  );
-  return modifiedArray.reduce((a, b) => a.concat(b));
-};
 
 let updatedFrames;
 
@@ -43,12 +31,14 @@ function Canvas(props) {
   let isSwitched = false;
   let isMouseDownSwitched = false;
   const {
+    currentFrame,
     primaryColor,
     alternativeColor,
     penSize,
     activeTool,
     matrixLength,
     onSetUpdatedFrame,
+    frames,
   } = props;
   const canvasRef = React.useRef(null);
 
@@ -61,12 +51,23 @@ function Canvas(props) {
   };
 
   React.useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = getCtxFromRef();
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const extendedMatrix = createMatrix(matrixLength, frames[currentFrame]);
+    extendedMatrix.forEach((curr) => drawOnCanvas(ctx, curr, curr.color));
+    changeData(extendedMatrix);
+    updatedFrames = [...extendedMatrix];
+  }, [currentFrame]);
+
+  // no need
+  React.useEffect(() => {
     const ctx = getCtxFromRef();
     const extendedMatrix = createMatrix(matrixLength);
     extendedMatrix.forEach((curr) => drawOnCanvas(ctx, curr, curr.color));
     changeData(extendedMatrix);
     updatedFrames = [...extendedMatrix];
-    onSetUpdatedFrame(0, extendedMatrix);
+    onSetUpdatedFrame(currentFrame, extendedMatrix);
   }, []);
 
   const usePen = (e, ctx, color = colors[0]) => {
@@ -86,7 +87,122 @@ function Canvas(props) {
     });
   };
 
-  const useStroke = (e, ctx) => {};
+  const useStroke = (ctx, x1, y1, x2, y2) => {
+  
+    let x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
+
+    // Calculate line deltas
+    dx = x2 - x1;
+    dy = y2 - y1;
+
+    // Create a positive copy of deltas (makes iterating easier)
+    dx1 = Math.abs(dx);
+    dy1 = Math.abs(dy);
+
+    // Calculate error intervals for both axis
+    px = 2 * dy1 - dx1;
+    py = 2 * dx1 - dy1;
+
+    // The line is X-axis dominant
+    if (dy1 <= dx1) {
+
+        // Line is drawn left to right
+        if (dx >= 0) {
+            x = x1; y = y1; xe = x2;
+        } else { // Line is drawn right to left (swap ends)
+            x = x2; y = y2; xe = x1;
+        }
+
+           parts.forEach((part) => {
+        const minX = part.width * part.place.column;
+        const minY = part.width * part.place.row;
+        const maxX = part.width * part.place.column + part.width;
+        const maxY = part.width * part.place.row + part.width;
+        if (x >= minX && x < maxX && y >= minY && y < maxY) {
+         
+          drawOnCanvas(ctx, part, primaryColor);
+        }
+      });
+
+        // Rasterize the line
+        for (i = 0; x < xe; i++) {
+            x = x + 1;
+
+            // Deal with octants...
+            if (px < 0) {
+                px = px + 2 * dy1;
+            } else {
+                if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
+                    y = y + 1;
+                } else {
+                    y = y - 1;
+                }
+                px = px + 2 * (dy1 - dx1);
+            }
+
+            // Draw pixel from line span at currently rasterized position
+            parts.forEach((part) => {
+              const minX = part.width * part.place.column;
+              const minY = part.width * part.place.row;
+              const maxX = part.width * part.place.column + part.width;
+              const maxY = part.width * part.place.row + part.width;
+              if (x >= minX && x < maxX && y >= minY && y < maxY) {
+               
+                drawOnCanvas(ctx, part, primaryColor);
+              }
+            });
+        }
+
+    } else { // The line is Y-axis dominant
+
+        // Line is drawn bottom to top
+        if (dy >= 0) {
+            x = x1; y = y1; ye = y2;
+        } else { // Line is drawn top to bottom
+            x = x2; y = y2; ye = y1;
+        }
+
+        parts.forEach((part) => {
+          const minX = part.width * part.place.column;
+          const minY = part.width * part.place.row;
+          const maxX = part.width * part.place.column + part.width;
+          const maxY = part.width * part.place.row + part.width;
+          if (x >= minX && x < maxX && y >= minY && y < maxY) {
+           
+            drawOnCanvas(ctx, part, primaryColor);
+          }
+        });
+
+        // Rasterize the line
+        for (i = 0; y < ye; i++) {
+            y = y + 1;
+
+            // Deal with octants...
+            if (py <= 0) {
+                py = py + 2 * dx1;
+            } else {
+                if ((dx < 0 && dy<0) || (dx > 0 && dy > 0)) {
+                    x = x + 1;
+                } else {
+                    x = x - 1;
+                }
+                py = py + 2 * (dx1 - dy1);
+            }
+
+            // Draw pixel from line span at currently rasterized position
+            parts.forEach((part) => {
+              const minX = part.width * part.place.column;
+              const minY = part.width * part.place.row;
+              const maxX = part.width * part.place.column + part.width;
+              const maxY = part.width * part.place.row + part.width;
+              if (x >= minX && x < maxX && y >= minY && y < maxY) {
+               
+                drawOnCanvas(ctx, part, primaryColor);
+              }
+            });
+        }
+    }
+  };
 
   const useColorPicker = (e, ctx) => {};
 
@@ -136,6 +252,9 @@ function Canvas(props) {
     bucketList.forEach((val) => drawOnCanvas(ctx, val, primaryColor, parts));
   };
 
+  let coordsMouseDown;
+  let coordsMouseUp;
+
   const mouseAction = (e) => {
     const ctx = getCtxFromRef();
     switch (activeTool) {
@@ -155,10 +274,10 @@ function Canvas(props) {
         useColorPicker(e, ctx);
         break;
       }
-      case tools.stroke: {
-        useStroke(e, ctx);
-        break;
-      }
+      // case tools.stroke: {
+      //   useStroke(ctx, coordsMouseDown.x, coordsMouseUp.x, coordsMouseDown.y, coordsMouseUp.y);
+      //   break;
+      // }
       case tools.allToOneColor: {
         useAllToOneColor(e, ctx);
         break;
@@ -171,6 +290,10 @@ function Canvas(props) {
   const mouseHandler = (e) => {
     const { nativeEvent } = e;
     if (e.type === mouseEvents.mousedown) {
+      if (activeTool === tools.stroke) {
+        coordsMouseDown = { x: nativeEvent.layerX, y: nativeEvent.layerY };
+        console.log('TCL: mouseHandler -> coordsMouseDown', coordsMouseDown);
+      }
       isSwitched = true;
       isMouseDownSwitched = true;
       if (isMouseDownSwitched) {
@@ -181,7 +304,15 @@ function Canvas(props) {
     if (e.type === mouseEvents.mouseup) {
       isSwitched = false;
       changeData(updatedFrames);
-      onSetUpdatedFrame(0, updatedFrames);
+      onSetUpdatedFrame(currentFrame, updatedFrames);
+      if (activeTool === tools.stroke) {
+        const ctx = getCtxFromRef();
+        coordsMouseUp = { x: nativeEvent.layerX, y: nativeEvent.layerY };
+        console.log('TCL: mouseHandler -> coordsMouseUp', coordsMouseUp);
+        useStroke(ctx, coordsMouseDown.x, coordsMouseDown.y, coordsMouseUp.x, coordsMouseUp.y);
+        coordsMouseUp = {};
+        coordsMouseDown = {};
+      }
     }
     if (e.type === mouseEvents.mouseout) {
       isSwitched = false;
@@ -214,6 +345,8 @@ export default connect(
     activeTool: state.tools.activeTool,
     penSize: state.tools.penSize,
     matrixLength: 32,
+    frames: state.frames.framesArray,
+    currentFrame: state.frames.currentFrame,
   }),
   (dispatch) => ({
     onSetUpdatedFrame: (frame, data) => dispatch(setUpdatedFrame(frame, data)),

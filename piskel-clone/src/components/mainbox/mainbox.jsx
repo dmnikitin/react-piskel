@@ -1,11 +1,12 @@
 import React from 'react';
 import './mainbox.scss';
+// import { connect } from 'react-redux';
 import Canvas from './canvas/canvas.jsx';
 import Framebox from './framebox/framebox.jsx';
 import Preview from './preview/preview.jsx';
 import Toolbox from './toolbox/toolbox.jsx';
 
-function Mainbox() {
+export default function Mainbox() {
   return (
     <div className="mainbox">
       <Framebox />
@@ -16,4 +17,6 @@ function Mainbox() {
   );
 }
 
-export default Mainbox;
+// export default connect((state) => ({
+//   currentFrame: state.frames.currentFrame,
+// }))(Mainbox);

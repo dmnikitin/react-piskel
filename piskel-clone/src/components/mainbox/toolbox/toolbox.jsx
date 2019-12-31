@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './toolbox.scss';
+import ColorsBox from './colors.jsx';
 
 import {
   setActiveTool,
@@ -48,10 +49,7 @@ function Toolbox(props) {
           large
         </button>
       </div>
-      <div className="toolbox-colors">
-        <div>currentCOLORS</div>
-        <div>PALETTE</div>
-      </div>
+      <ColorsBox />
       <div className="toolbox-controls">
         <button>save</button>
         <button>resize</button>
