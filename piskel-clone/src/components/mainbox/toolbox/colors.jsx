@@ -1,22 +1,19 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import { setColor } from '../../../state/ac/tools';
 import { colors } from '../../../assets/data';
 
-import { setPrimaryColor, setAlternativeColor } from '../../../state/ac/tools';
-
 function ColorsBox(props) {
-  const { onSetAlternativeColor, onSetPrimaryColor, primaryColor } = props;
-  React.useEffect(() => {}, []);
-  const clickHandler = (e) => {
-    // const { nativeEvent } = e;
-    // console.log('native', nativeEvent);
-    onSetAlternativeColor(primaryColor);
-    // onSetPrimaryColor(nativeEvent.target.key);
-    onSetPrimaryColor(colors[e]);
-  };
+  const { onSetColor, primaryColor, alternativeColor } = props;
+  const clickHandler = (e) => onSetColor(colors[e], primaryColor);
+
   return (
     <section className="toolbox-colors">
-      <ColorsActive props={props} />
+      <ColorsActive
+        onSetColor={onSetColor}
+        primaryColor={primaryColor}
+        alternativeColor={alternativeColor}
+      />
       <ul className="toolbox-colors-palette">
         {Object.keys(colors)
           .filter((e, ind) => {
@@ -35,14 +32,11 @@ function ColorsBox(props) {
 }
 
 function ColorsActive(props) {
-  const { primaryColor, alternativeColor, onSetAlternativeColor, onSetPrimaryColor } = props.props;
-  React.useEffect(() => {
-    console.log('props', props);
-  }, []);
-  const clickHandler = (e) => {
-    onSetAlternativeColor(primaryColor);
-    onSetPrimaryColor(alternativeColor);
-  };
+  const { primaryColor, alternativeColor, onSetColor } = props;
+  // React.useEffect(() => {
+  //   console.log('props', props);
+  // }, []);
+  const clickHandler = () => onSetColor(alternativeColor, primaryColor);
   return (
     <div className="toolbox-colors-active">
       <div className="toolbox-colors-active__primary" style={{ background: primaryColor }} />
@@ -59,11 +53,10 @@ function ColorsActive(props) {
 
 export default connect(
   (state) => ({
-    primaryColor: state.tools.primaryColor,
-    alternativeColor: state.tools.alternativeColor,
+    primaryColor: state.tools.colors.primaryColor,
+    alternativeColor: state.tools.colors.alternativeColor,
   }),
   (dispatch) => ({
-    onSetPrimaryColor: (color) => dispatch(setPrimaryColor(color)),
-    onSetAlternativeColor: (color) => dispatch(setAlternativeColor(color)),
+    onSetColor: (primary, alternative) => dispatch(setColor(primary, alternative)),
   })
 )(ColorsBox);

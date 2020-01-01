@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { colors, tools, mouseEvents } from '../../../assets/data';
 import './canvas.scss';
 import { setUpdatedFrame } from '../../../state/ac/frames';
+import { setColor } from '../../../state/ac/tools';
 import { createMatrix } from '../../../helpers/canvas';
 // get screen width => canvas h/w
 // const LSArray = parts.map((val) => val.color).reduce((a,b) => a.concat(b)));
@@ -38,6 +39,7 @@ function Canvas(props) {
     activeTool,
     matrixLength,
     onSetUpdatedFrame,
+    onSetColor,
     frames,
   } = props;
   const canvasRef = React.useRef(null);
@@ -204,9 +206,40 @@ function Canvas(props) {
     }
   };
 
-  const useColorPicker = (e, ctx) => {};
+  const useColorPicker = (e, ctx) => {
+    parts.forEach((part) => {
+      const minX = part.width * part.place.column;
+      const minY = part.width * part.place.row;
+      const maxX = part.width * part.place.column + part.width;
+      const maxY = part.width * part.place.row + part.width;
+      if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
+         onSetColor(part.color, primaryColor);
+      }
+    });
+  };
 
-  const useAllToOneColor = (e, ctx) => {};
+  const useAllToOneColor = (e, ctx) => {  
+    const getColor = () => {
+      let color;
+      parts.forEach((part) => {
+        const minX = part.width * part.place.column;
+        const minY = part.width * part.place.row;
+        const maxX = part.width * part.place.column + part.width;
+        const maxY = part.width * part.place.row + part.width;
+        if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
+            color = part.color;
+        }
+      });
+      return color;      
+    };
+    const color = getColor();
+
+    parts.forEach((part) => {
+     if (part.color === color) {      
+      drawOnCanvas(ctx, part, primaryColor, parts);
+     }
+    });
+  };
 
   const useBucket = (e, ctx) => {
     const bucketList = [];
@@ -274,10 +307,6 @@ function Canvas(props) {
         useColorPicker(e, ctx);
         break;
       }
-      // case tools.stroke: {
-      //   useStroke(ctx, coordsMouseDown.x, coordsMouseUp.x, coordsMouseDown.y, coordsMouseUp.y);
-      //   break;
-      // }
       case tools.allToOneColor: {
         useAllToOneColor(e, ctx);
         break;
@@ -292,7 +321,6 @@ function Canvas(props) {
     if (e.type === mouseEvents.mousedown) {
       if (activeTool === tools.stroke) {
         coordsMouseDown = { x: nativeEvent.layerX, y: nativeEvent.layerY };
-        console.log('TCL: mouseHandler -> coordsMouseDown', coordsMouseDown);
       }
       isSwitched = true;
       isMouseDownSwitched = true;
@@ -308,7 +336,6 @@ function Canvas(props) {
       if (activeTool === tools.stroke) {
         const ctx = getCtxFromRef();
         coordsMouseUp = { x: nativeEvent.layerX, y: nativeEvent.layerY };
-        console.log('TCL: mouseHandler -> coordsMouseUp', coordsMouseUp);
         useStroke(ctx, coordsMouseDown.x, coordsMouseDown.y, coordsMouseUp.x, coordsMouseUp.y);
         coordsMouseUp = {};
         coordsMouseDown = {};
@@ -340,8 +367,8 @@ function Canvas(props) {
 
 export default connect(
   (state) => ({
-    primaryColor: state.tools.primaryColor,
-    alternativeColor: state.tools.alternativeColor,
+    primaryColor: state.tools.colors.primaryColor,
+    alternativeColor: state.tools.colors.alternativeColor,
     activeTool: state.tools.activeTool,
     penSize: state.tools.penSize,
     matrixLength: 32,
@@ -350,5 +377,6 @@ export default connect(
   }),
   (dispatch) => ({
     onSetUpdatedFrame: (frame, data) => dispatch(setUpdatedFrame(frame, data)),
-  })
+    onSetColor: (primary, alternative) => dispatch(setColor(primary, alternative))
+  }),
 )(Canvas);

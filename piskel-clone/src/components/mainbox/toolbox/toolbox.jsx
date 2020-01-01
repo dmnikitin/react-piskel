@@ -3,15 +3,10 @@ import { connect } from 'react-redux';
 import './toolbox.scss';
 import ColorsBox from './colors.jsx';
 
-import {
-  setActiveTool,
-  setPrimaryColor,
-  setAlternativeColor,
-  setPenSize,
-} from '../../../state/ac/tools';
+import { setActiveTool, setPenSize } from '../../../state/ac/tools';
 
 function Toolbox(props) {
-  const { onSetActiveTool, onSetPrimaryColor, onSetAlternativeColor, onSetPenSize } = props;
+  const { onSetActiveTool, onSetPenSize } = props;
 
   const handleTools = (e) => onSetActiveTool(e.currentTarget.getAttribute('data'));
   const handlePenSize = (e) => onSetPenSize(e.currentTarget.getAttribute('data'));
@@ -34,7 +29,7 @@ function Toolbox(props) {
         <button type="button" onClick={handleTools} data="bucket">
           BUCKET
         </button>
-        <button type="button" onClick={handleTools} data="allToOne">
+        <button type="button" onClick={handleTools} data="allToOneColor">
           ALLTOONE
         </button>
       </div>
@@ -60,8 +55,6 @@ function Toolbox(props) {
 
 export default connect(null, (dispatch) => ({
   onSetActiveTool: (tool) => dispatch(setActiveTool(tool)),
-  onSetPrimaryColor: (color) => dispatch(setPrimaryColor(color)),
-  onSetAlternativeColor: (color) => dispatch(setAlternativeColor(color)),
   onSetPenSize: (size) => dispatch(setPenSize(size)),
 }))(Toolbox);
 

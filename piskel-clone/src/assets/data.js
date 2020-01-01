@@ -47,8 +47,10 @@ const tools = {
 };
 
 const active = {
-  primaryColor: colors[1],
-  alternativeColor: colors[0],
+  colors: {
+    primaryColor: colors[1],
+    alternativeColor: colors[0],
+  },
   activeTool: tools.pen,
   penSize: penSize[0],
 };

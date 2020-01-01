@@ -3,4 +3,13 @@
 
   display: flex;
   flex-direction: column;
+
+  &-frame {
+    display: flex;
+
+    &-buttons {
+      display: flex;
+      flex-direction: column;
+    }
+  }
 }
