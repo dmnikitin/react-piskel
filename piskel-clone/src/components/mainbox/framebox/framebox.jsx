@@ -1,11 +1,9 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import Frame from './frame.jsx';
-
-import { setUpdatedFrame, setCurrentFrame, addFrame } from '../../../state/ac/frames.js';
 import './framebox.scss';
 
-function Framebox({ frames, currentFrame, onSetCurrentFrame, onAddFrame }) {
+function Framebox({ frames }) {
   return (
     <div className="framebox">
       {frames.map((current, index) => (
@@ -17,5 +15,4 @@ function Framebox({ frames, currentFrame, onSetCurrentFrame, onAddFrame }) {
 
 export default connect((state) => ({
   frames: state.frames.framesArray,
-  currentFrame: state.frames.currentFrame,
 }))(Framebox);

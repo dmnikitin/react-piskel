@@ -5,3 +5,4 @@
 | 28.12.2019 | 28.12.2019 | 3hr        | setup redux, implement draw functionality                    |
 | 29.12.2019 | 29.12.2019 | 3hr        | implement basic frames realisation, bucket, colorpicker func |
 | 30.12.2019 | 31.12.2019 | 5hr        | modify frames functionality, implement stroke, eraser func   |
+| 01.01.2020 | 01.01.2020 | 2hr        | implement frames animation, full screen view                 |

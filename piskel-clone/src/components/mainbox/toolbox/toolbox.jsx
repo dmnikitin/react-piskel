@@ -12,7 +12,7 @@ function Toolbox(props) {
   const handlePenSize = (e) => onSetPenSize(e.currentTarget.getAttribute('data'));
 
   return (
-    <div className="toolbox">
+    <button className="toolbox">
       <div className="toolbox-tools">
         <button type="button" onClick={handleTools} data="pen">
           PEN
@@ -45,11 +45,12 @@ function Toolbox(props) {
         </button>
       </div>
       <ColorsBox />
-      <div className="toolbox-controls">
+      <button className="toolbox-controls">
+        <button>change keys</button>
         <button>save</button>
         <button>resize</button>
-      </div>
-    </div>
+      </button>
+    </button>
   );
 }
 
