@@ -6,3 +6,5 @@
 | 29.12.2019 | 29.12.2019 | 3hr        | implement basic frames realisation, bucket, colorpicker func |
 | 30.12.2019 | 31.12.2019 | 5hr        | modify frames functionality, implement stroke, eraser func   |
 | 01.01.2020 | 01.01.2020 | 2hr        | implement frames animation, full screen view                 |
+| 02.01.2020 | 02.01.2020 | 2hr        | implement keyboard events, modal window                 |
+| 03.01.2020 | 04.01.2020 | 4hr        | implement drag and drop, various bug fixes                  |

@@ -1,12 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { colors, tools, mouseEvents } from '../../../assets/data';
 import './canvas.scss';
 import { setUpdatedFrame } from '../../../state/ac/frames';
 import { setColor } from '../../../state/ac/tools';
 import { createMatrix } from '../../../helpers/canvas';
 // get screen width => canvas h/w
-// const LSArray = parts.map((val) => val.color).reduce((a,b) => a.concat(b)));
+// const LSArray = state.map((val) => val.color).reduce((a,b) => a.concat(b)));
 
 let updatedFrames;
 
@@ -44,7 +45,7 @@ function Canvas(props) {
   } = props;
   const canvasRef = React.useRef(null);
 
-  const [parts, changeData] = React.useState([]);
+  const [state, changeState] = React.useState([]);
 
   const getCtxFromRef = () => {
     const canvas = canvasRef.current;
@@ -52,192 +53,178 @@ function Canvas(props) {
     return ctx;
   };
 
-  React.useEffect(() => {
+  const createFrame = () => {
     const canvas = canvasRef.current;
     const ctx = getCtxFromRef();
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    const extendedMatrix = createMatrix(matrixLength, frames[currentFrame]);
+    const x = frames[currentFrame] ? frames[currentFrame].array : [];
+    const extendedMatrix = createMatrix(matrixLength, x);
     extendedMatrix.forEach((curr) => drawOnCanvas(ctx, curr, curr.color));
-    changeData(extendedMatrix);
+    changeState(extendedMatrix);
     updatedFrames = [...extendedMatrix];
+  };
+
+  React.useEffect(() => {
+    createFrame();
   }, [currentFrame]);
 
-  // no need
   React.useEffect(() => {
-    const ctx = getCtxFromRef();
-    const extendedMatrix = createMatrix(matrixLength);
-    extendedMatrix.forEach((curr) => drawOnCanvas(ctx, curr, curr.color));
-    changeData(extendedMatrix);
-    updatedFrames = [...extendedMatrix];
-    onSetUpdatedFrame(currentFrame, extendedMatrix);
+    createFrame();
+  }, [frames]);
+
+  React.useEffect(() => {
+    createFrame();
+    onSetUpdatedFrame(currentFrame, { id: currentFrame, array: updatedFrames });
   }, []);
 
   const usePen = (e, ctx, color = colors[0]) => {
-    parts.forEach((part) => {
+    state.forEach((part) => {
       const minX = part.width * part.place.column;
       const minY = part.width * part.place.row;
       const maxX = part.width * part.place.column + part.width;
       const maxY = part.width * part.place.row + part.width;
       if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
         if (e.button === 2) {
-          drawOnCanvas(ctx, part, color, parts);
+          drawOnCanvas(ctx, part, color, state);
         } else if (e.button === 0) {
-          drawOnCanvas(ctx, part, color, parts);
+          drawOnCanvas(ctx, part, color, state);
         }
-        // drawOnCanvas(ctx, part, e.button ? alternativeColor : primaryColor, parts);
+        // drawOnCanvas(ctx, part, e.button ? alternativeColor : primaryColor, state);
       }
     });
   };
 
   const useStroke = (ctx, x1, y1, x2, y2) => {
-  
-    let x, y, dx, dy, dx1, dy1, px, py, xe, ye, i;
+    let x;
+    let y;
+    let xDominant;
+    let yDominant;
+    let iterator;
+    const deltaX = x2 - x1;
+    const deltaY = y2 - y1;
+    const positiveDeltaX = Math.abs(deltaX);
+    const positiveDeltaY = Math.abs(deltaY);
+    let errorIntervalX = 2 * positiveDeltaY - positiveDeltaX;
+    let errorIntervalY = 2 * positiveDeltaX - positiveDeltaY;
 
-    // Calculate line deltas
-    dx = x2 - x1;
-    dy = y2 - y1;
-
-    // Create a positive copy of deltas (makes iterating easier)
-    dx1 = Math.abs(dx);
-    dy1 = Math.abs(dy);
-
-    // Calculate error intervals for both axis
-    px = 2 * dy1 - dx1;
-    py = 2 * dx1 - dy1;
-
-    // The line is X-axis dominant
-    if (dy1 <= dx1) {
-
-        // Line is drawn left to right
-        if (dx >= 0) {
-            x = x1; y = y1; xe = x2;
-        } else { // Line is drawn right to left (swap ends)
-            x = x2; y = y2; xe = x1;
-        }
-
-           parts.forEach((part) => {
+    if (positiveDeltaY <= positiveDeltaX) {
+      if (deltaX >= 0) {
+        x = x1;
+        y = y1;
+        xDominant = x2;
+      } else {
+        x = x2;
+        y = y2;
+        xDominant = x1;
+      }
+      state.forEach((part) => {
         const minX = part.width * part.place.column;
         const minY = part.width * part.place.row;
         const maxX = part.width * part.place.column + part.width;
         const maxY = part.width * part.place.row + part.width;
         if (x >= minX && x < maxX && y >= minY && y < maxY) {
-         
           drawOnCanvas(ctx, part, primaryColor);
         }
       });
-
-        // Rasterize the line
-        for (i = 0; x < xe; i++) {
-            x = x + 1;
-
-            // Deal with octants...
-            if (px < 0) {
-                px = px + 2 * dy1;
-            } else {
-                if ((dx < 0 && dy < 0) || (dx > 0 && dy > 0)) {
-                    y = y + 1;
-                } else {
-                    y = y - 1;
-                }
-                px = px + 2 * (dy1 - dx1);
-            }
-
-            // Draw pixel from line span at currently rasterized position
-            parts.forEach((part) => {
-              const minX = part.width * part.place.column;
-              const minY = part.width * part.place.row;
-              const maxX = part.width * part.place.column + part.width;
-              const maxY = part.width * part.place.row + part.width;
-              if (x >= minX && x < maxX && y >= minY && y < maxY) {
-               
-                drawOnCanvas(ctx, part, primaryColor);
-              }
-            });
+      for (iterator = 0; x < xDominant; iterator += 1) {
+        x += 1;
+        if (errorIntervalX < 0) {
+          errorIntervalX += 2 * positiveDeltaY;
+        } else {
+          if ((deltaX < 0 && deltaY < 0) || (deltaX > 0 && deltaY > 0)) {
+            y += 1;
+          } else {
+            y -= 1;
+          }
+          errorIntervalX += 2 * (positiveDeltaY - positiveDeltaX);
         }
-
-    } else { // The line is Y-axis dominant
-
-        // Line is drawn bottom to top
-        if (dy >= 0) {
-            x = x1; y = y1; ye = y2;
-        } else { // Line is drawn top to bottom
-            x = x2; y = y2; ye = y1;
-        }
-
-        parts.forEach((part) => {
+        state.forEach((part) => {
           const minX = part.width * part.place.column;
           const minY = part.width * part.place.row;
           const maxX = part.width * part.place.column + part.width;
           const maxY = part.width * part.place.row + part.width;
           if (x >= minX && x < maxX && y >= minY && y < maxY) {
-           
             drawOnCanvas(ctx, part, primaryColor);
           }
         });
-
-        // Rasterize the line
-        for (i = 0; y < ye; i++) {
-            y = y + 1;
-
-            // Deal with octants...
-            if (py <= 0) {
-                py = py + 2 * dx1;
-            } else {
-                if ((dx < 0 && dy<0) || (dx > 0 && dy > 0)) {
-                    x = x + 1;
-                } else {
-                    x = x - 1;
-                }
-                py = py + 2 * (dx1 - dy1);
-            }
-
-            // Draw pixel from line span at currently rasterized position
-            parts.forEach((part) => {
-              const minX = part.width * part.place.column;
-              const minY = part.width * part.place.row;
-              const maxX = part.width * part.place.column + part.width;
-              const maxY = part.width * part.place.row + part.width;
-              if (x >= minX && x < maxX && y >= minY && y < maxY) {
-               
-                drawOnCanvas(ctx, part, primaryColor);
-              }
-            });
+      }
+    } else {
+      if (deltaY >= 0) {
+        x = x1;
+        y = y1;
+        yDominant = y2;
+      } else {
+        x = x2;
+        y = y2;
+        yDominant = y1;
+      }
+      state.forEach((part) => {
+        const minX = part.width * part.place.column;
+        const minY = part.width * part.place.row;
+        const maxX = part.width * part.place.column + part.width;
+        const maxY = part.width * part.place.row + part.width;
+        if (x >= minX && x < maxX && y >= minY && y < maxY) {
+          drawOnCanvas(ctx, part, primaryColor);
         }
+      });
+
+      for (iterator = 0; y < yDominant; iterator += 1) {
+        y += 1;
+        if (errorIntervalY <= 0) {
+          errorIntervalY += 2 * positiveDeltaX;
+        } else {
+          if ((deltaX < 0 && deltaY < 0) || (deltaX > 0 && deltaY > 0)) {
+            x += 1;
+          } else {
+            x -= 1;
+          }
+          errorIntervalY += 2 * (positiveDeltaX - positiveDeltaY);
+        }
+        state.forEach((part) => {
+          const minX = part.width * part.place.column;
+          const minY = part.width * part.place.row;
+          const maxX = part.width * part.place.column + part.width;
+          const maxY = part.width * part.place.row + part.width;
+          if (x >= minX && x < maxX && y >= minY && y < maxY) {
+            drawOnCanvas(ctx, part, primaryColor);
+          }
+        });
+      }
     }
   };
 
   const useColorPicker = (e, ctx) => {
-    parts.forEach((part) => {
+    state.forEach((part) => {
       const minX = part.width * part.place.column;
       const minY = part.width * part.place.row;
       const maxX = part.width * part.place.column + part.width;
       const maxY = part.width * part.place.row + part.width;
       if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
-         onSetColor(part.color, primaryColor);
+        onSetColor(part.color, primaryColor);
       }
     });
   };
 
-  const useAllToOneColor = (e, ctx) => {  
+  const useAllToOneColor = (e, ctx) => {
     const getColor = () => {
       let color;
-      parts.forEach((part) => {
+      state.forEach((part) => {
         const minX = part.width * part.place.column;
         const minY = part.width * part.place.row;
         const maxX = part.width * part.place.column + part.width;
         const maxY = part.width * part.place.row + part.width;
         if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
-            color = part.color;
+          color = part.color;
         }
       });
-      return color;      
+      return color;
     };
     const color = getColor();
 
-    parts.forEach((part) => {
-     if (part.color === color) {      
-      drawOnCanvas(ctx, part, primaryColor, parts);
-     }
+    state.forEach((part) => {
+      if (part.color === color) {
+        drawOnCanvas(ctx, part, primaryColor, state);
+      }
     });
   };
 
@@ -245,26 +232,26 @@ function Canvas(props) {
     const bucketList = [];
 
     const addToBucket = (part) => {
-      parts.forEach((val) => {
+      state.forEach((val) => {
         if (val.id === part.id) {
           const adjacent = [];
           const row = Math.floor(val.id / matrixLength);
           const column = val.id % matrixLength;
-          if (column > 0) adjacent.push(parts[row * matrixLength + column - 1].id);
-          if (row > 0) adjacent.push(parts[(row - 1) * matrixLength + column].id);
-          if (row <= matrixLength - 2) adjacent.push(parts[(row + 1) * matrixLength + column].id);
-          if (column <= matrixLength - 2) adjacent.push(parts[row * matrixLength + column + 1].id);
+          if (column > 0) adjacent.push(state[row * matrixLength + column - 1].id);
+          if (row > 0) adjacent.push(state[(row - 1) * matrixLength + column].id);
+          if (row <= matrixLength - 2) adjacent.push(state[(row + 1) * matrixLength + column].id);
+          if (column <= matrixLength - 2) adjacent.push(state[row * matrixLength + column + 1].id);
           adjacent.forEach((pixel) => {
-            if (bucketList.indexOf(parts[pixel]) < 0 && parts[pixel].color === part.color) {
-              bucketList.push(parts[pixel]);
-              addToBucket(parts[pixel]);
+            if (bucketList.indexOf(state[pixel]) < 0 && state[pixel].color === part.color) {
+              bucketList.push(state[pixel]);
+              addToBucket(state[pixel]);
             }
           });
         }
       });
     };
 
-    parts.forEach((val) => {
+    state.forEach((val) => {
       const part = val;
       part.minX = part.width * part.place.column;
       part.minY = part.width * part.place.row;
@@ -282,7 +269,7 @@ function Canvas(props) {
         }
       }
     });
-    bucketList.forEach((val) => drawOnCanvas(ctx, val, primaryColor, parts));
+    bucketList.forEach((val) => drawOnCanvas(ctx, val, primaryColor, state));
   };
 
   let coordsMouseDown;
@@ -331,8 +318,8 @@ function Canvas(props) {
     }
     if (e.type === mouseEvents.mouseup) {
       isSwitched = false;
-      changeData(updatedFrames);
-      onSetUpdatedFrame(currentFrame, updatedFrames);
+      changeState(updatedFrames);
+      onSetUpdatedFrame(currentFrame, { id: currentFrame, array: updatedFrames });
       if (activeTool === tools.stroke) {
         const ctx = getCtxFromRef();
         coordsMouseUp = { x: nativeEvent.layerX, y: nativeEvent.layerY };
@@ -377,6 +364,18 @@ export default connect(
   }),
   (dispatch) => ({
     onSetUpdatedFrame: (frame, data) => dispatch(setUpdatedFrame(frame, data)),
-    onSetColor: (primary, alternative) => dispatch(setColor(primary, alternative))
-  }),
+    onSetColor: (primary, alternative) => dispatch(setColor(primary, alternative)),
+  })
 )(Canvas);
+
+Canvas.propTypes = {
+  // frames: PropTypes.arrayOf(PropTypes.shape({
+  //   id: PropTypes.number.isRequired,
+  //   array: PropTypes.array.isRequired,
+  // })).isRequired,
+  // frame: PropTypes.shape({ id: PropTypes.number, array: PropTypes.array }).isRequired,
+  // index: PropTypes.number.isRequired,
+  // onDeleteFrame: PropTypes.func.isRequired,
+  // onSetCurrentFrame: PropTypes.func.isRequired,
+  // onAddFrame: PropTypes.func.isRequired,
+};

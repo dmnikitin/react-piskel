@@ -1,63 +1,80 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import './toolbox.scss';
+import Modal from 'react-modal';
 import ColorsBox from './colors.jsx';
+import Button from './button.jsx';
+import ChangeControl from './changeControl.jsx';
 
-import { setActiveTool, setPenSize } from '../../../state/ac/tools';
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+};
 
-function Toolbox(props) {
-  const { onSetActiveTool, onSetPenSize } = props;
-
-  const handleTools = (e) => onSetActiveTool(e.currentTarget.getAttribute('data'));
-  const handlePenSize = (e) => onSetPenSize(e.currentTarget.getAttribute('data'));
+function Toolbox({ buttons }) {
+  const [modalIsOpen, setIsOpen] = React.useState(false);
+  const openModal = () => setIsOpen(true);
+  const closeModal = () => setIsOpen(false);
+  const entries = Object.entries(buttons);
 
   return (
-    <button className="toolbox">
+    <section className="toolbox">
       <div className="toolbox-tools">
-        <button type="button" onClick={handleTools} data="pen">
-          PEN
-        </button>
-        <button type="button" onClick={handleTools} data="eraser">
-          ERASER
-        </button>
-        <button type="button" onClick={handleTools} data="colorPicker">
-          COLORPICKER
-        </button>
-        <button type="button" onClick={handleTools} data="stroke">
-          STROKE
-        </button>
-        <button type="button" onClick={handleTools} data="bucket">
-          BUCKET
-        </button>
-        <button type="button" onClick={handleTools} data="allToOneColor">
-          ALLTOONE
-        </button>
+        <Button data="pen" icon="pencil" />
+        <Button data="eraser" icon="eraser" />
+        <Button data="colorPicker" icon="eyedropper" />
+        <Button data="stroke" icon="arrows-h" />
+        <Button data="bucket" icon="shower" />
+        <Button data="allToOneColor" icon="magic" />
       </div>
+
       <div className="toolbox-pensize">
-        <button type="button" onClick={handlePenSize} data="0">
+        <span>Choose the pen size</span>
+        <button type="button" data="0">
           small
         </button>
-        <button type="button" onClick={handlePenSize} data="1">
+        <button type="button" data="1">
           medium
         </button>
-        <button type="button" onClick={handlePenSize} data="2">
+        exposure_plus_2
+        <button type="button" data="2">
           large
         </button>
       </div>
       <ColorsBox />
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={closeModal}
+        style={customStyles}
+        contentLabel="Example Modal"
+      >
+        {entries.map((current) => (
+          <li>
+            <span>{current[0]}</span> :<span>{String.fromCharCode(current[1])}</span>
+            <ChangeControl tool={current[0]} />
+          </li>
+        ))}
+        <button onClick={closeModal}>close</button>
+      </Modal>
       <button className="toolbox-controls">
-        <button>change keys</button>
+        <button onClick={openModal}>change keys</button>
         <button>save</button>
         <button>resize</button>
       </button>
-    </button>
+    </section>
   );
 }
 
-export default connect(null, (dispatch) => ({
-  onSetActiveTool: (tool) => dispatch(setActiveTool(tool)),
-  onSetPenSize: (size) => dispatch(setPenSize(size)),
-}))(Toolbox);
+export default connect(
+  (state) => ({ buttons: state.buttons }),
+  () => {}
+)(Toolbox);
 
 // ToolbarMeta.defaultProps = {
 //   tags: [],

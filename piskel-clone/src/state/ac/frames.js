@@ -1,8 +1,19 @@
-import { UPDATE_FRAME, SET_CURRENT_FRAME, ADD_FRAME, DELETE_FRAME } from '../variables';
+import {
+  UPDATE_FRAME,
+  SET_CURRENT_FRAME,
+  ADD_FRAME,
+  DELETE_FRAME,
+  REARRANGE_FRAMES,
+} from '../variables';
 
 const setUpdatedFrame = (frame, data) => ({
   type: UPDATE_FRAME,
   payload: { frame, data },
+});
+
+const rearrangeFrames = (dragIndex, hoverIndex) => ({
+  type: REARRANGE_FRAMES,
+  payload: { dragIndex, hoverIndex },
 });
 
 const setCurrentFrame = (frame) => ({
@@ -20,4 +31,4 @@ const deleteFrame = (frame) => ({
   payload: frame,
 });
 
-export { setUpdatedFrame, setCurrentFrame, addFrame, deleteFrame };
+export { setUpdatedFrame, setCurrentFrame, addFrame, deleteFrame, rearrangeFrames };

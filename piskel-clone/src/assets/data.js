@@ -1,22 +1,25 @@
-// const colorsArray = {
-//   0: 'green',
-//   1: 'blue',
-//   2: 'red',
-//   3: 'grey',
-// };
-
-// const colorsObj = {
-//   '0, 128, 0': colorsArray[0],
-//   '0, 0, 255': colorsArray[1],
-//   '128, 128, 128': colorsArray[2],
-//   '255, 0, 0': colorsArray[3],
-// };
-
 const mouseEvents = {
   mousedown: 'mousedown',
   mouseup: 'mouseup',
   mousemove: 'mousemove',
   mouseout: 'mouseout',
+};
+
+const keyboardEvents = {
+  pen: 80,
+  bucket: 66,
+  stroke: 83,
+  eraser: 69,
+  colorPicker: 67,
+  allToOneColor: 77,
+  exportGif: 71,
+  exportApng: 72,
+  switchColor: 87,
+  resizeCanvas: 82,
+  changePenSize: 90,
+  addFrame: 65,
+  duplicateFrame: 68,
+  deleteFrame: 88,
 };
 
 const colors = {
@@ -55,4 +58,11 @@ const active = {
   penSize: penSize[0],
 };
 
-export { colors, penSize, tools, active, mouseEvents };
+const frameSize = {
+
+};
+
+export
+{
+  colors, penSize, tools, active, mouseEvents, keyboardEvents,
+};

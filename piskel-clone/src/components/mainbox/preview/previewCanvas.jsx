@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 const drawOnCanvas = (ctx, part, color, frameSize) => {
   const minX = part.width * part.place.column;
@@ -22,7 +23,7 @@ export default function PreviewCanvas({ frame, isFull }) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, frameSize, frameSize);
-      frame.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, !!isFull));
+      frame.array.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, !!isFull));
     }
   }, [frame]);
 
@@ -36,7 +37,7 @@ export default function PreviewCanvas({ frame, isFull }) {
       const canvas = canvasRef.current;
       const ctx = canvas.getContext('2d');
       ctx.clearRect(0, 0, frameSize, frameSize);
-      frame.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, !!isFull));
+      frame.array.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, !!isFull));
     }
   }, [isFull]);
 
@@ -46,3 +47,7 @@ export default function PreviewCanvas({ frame, isFull }) {
     </div>
   );
 }
+
+PreviewCanvas.propTypes = {
+  frame: PropTypes.shape({ id: PropTypes.number, array: PropTypes.array }).isRequired,
+};

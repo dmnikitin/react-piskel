@@ -1,23 +1,45 @@
 import React from 'react';
-import { Provider } from 'react-redux';
+import { connect } from 'react-redux';
 import './App.scss';
-import store from '../../state/store';
 import Mainbox from '../mainbox/mainbox.jsx';
-import { saveToLocalStorage } from '../../helpers/localStorageHandler';
+import { keyboardEvents } from '../../assets/data';
+import { setActiveTool, setPenSize } from '../../state/ac/tools';
 
-function App() {
+function App({ onSetActiveTool }) {
+  let nameInput;
+  React.useEffect(() => {
+    nameInput.focus();
+  }, []);
+  const handleKeyPress = (e) => {
+    const entries = Object.entries(keyboardEvents);
+    entries.forEach((key) => {
+      if (e.keyCode === key[1]) {
+        // try catch?
+        onSetActiveTool(key[0]);
+      }
+    });
+  };
+
   return (
-    <Provider store={store}>
-      <div className="App">
-        <header className="App-header">
-          <h3>PISKEL</h3>
-        </header>
-        <Mainbox />
-      </div>
-    </Provider>
+    <div
+      className="App"
+      onKeyDown={handleKeyPress}
+      tabIndex="1"
+      ref={(input) => {
+        nameInput = input;
+      }}
+    >
+      <header className="App-header">
+        <h3>PISKEL</h3>
+      </header>
+      <Mainbox />
+    </div>
   );
 }
 
-export default App;
+export default connect(null, (dispatch) => ({
+  onSetActiveTool: (tool) => dispatch(setActiveTool(tool)),
+  onSetPenSize: (size) => dispatch(setPenSize(size)),
+}))(App);
 
 // store.subscribe(() => saveToLocalStorage(store.getState()));

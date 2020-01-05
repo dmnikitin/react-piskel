@@ -10,6 +10,9 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     filename: 'index_bundle.js',
   },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
   module: {
     rules: [
       {
