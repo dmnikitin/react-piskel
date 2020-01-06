@@ -1,5 +1,4 @@
-import
-{
+import {
   UPDATE_FRAME,
   SET_CURRENT_FRAME,
   ADD_FRAME,
@@ -8,12 +7,10 @@ import
 } from '../variables';
 
 const defaultState = { framesArray: [], currentFrame: 0 };
-const FramesReducer = (state = defaultState, action) =>
-{
+const FramesReducer = (state = defaultState, action) => {
   const { type, payload } = action;
   const newArray = [...state.framesArray];
-  switch (type)
-  {
+  switch (type) {
     case UPDATE_FRAME: {
       newArray.splice(payload.frame, 1, payload.data);
       return { ...state, framesArray: newArray };

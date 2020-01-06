@@ -1,35 +1,49 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import { setButton } from '../../../state/ac/buttons';
 
 function ChangeControl({ tool, onSetButton }) {
-  const [isPressed, changePressed] = React.useState(false);
-  const [input, changeInput] = React.useState({ value: '' });
+  const [isPressed, changePressed] = useState(false);
+  const [input, changeInput] = useState({ value: '' });
 
-  const changeButton = () => onSetButton(tool, input.value);
-  const onChangeInput = (e) => {
-    console.log(e);
-    changeInput({ value: e.target.value });
-  };
+  const onChangeInput = (e) => changeInput({ value: e.target.value });
   const open = () => changePressed(true);
   const close = () => changePressed(false);
+  const changeButton = () => {
+    const x = input.value.toUpperCase().charCodeAt();
+    onSetButton(tool, x);
+  };
+  const submit = () => {
+    close();
+    changeButton();
+  };
 
-  return isPressed ? (
+  const displayedAtRender = (
     <form
       action=""
-      onSubmit={() => {
-        close();
-        console.log(tool, input);
-        changeButton();
-      }}
+      onSubmit={submit}
     >
-      <input type="text" value={input.value} onChange={onChangeInput} />
+      <input
+        autoFocus
+        type="text"
+        value={input.value}
+        onChange={onChangeInput}
+      />
     </form>
-  ) : (
-    <button onClick={open}> change </button>
   );
+  const displayedAtPressed = (
+    <button type="button" onClick={open}> change </button>
+  );
+
+  return isPressed ? displayedAtRender : displayedAtPressed;
 }
 
 export default connect(null, (dispatch) => ({
   onSetButton: (tool, button) => dispatch(setButton(tool, button)),
 }))(ChangeControl);
+
+ChangeControl.propTypes = {
+  tool: PropTypes.string.isRequired,
+  onSetButton: PropTypes.func.isRequired,
+};

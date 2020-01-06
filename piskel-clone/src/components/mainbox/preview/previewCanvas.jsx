@@ -1,53 +1,60 @@
-import React from 'react';
-import PropTypes from 'prop-types';
+// import React, { useEffect, useState, useRef } from 'react';
+// import PropTypes from 'prop-types';
+// import { drawOnCanvas } from '../../../helpers/canvas';
+// import { frameSizes } from '../../../assets/data';
 
-const drawOnCanvas = (ctx, part, color, frameSize) => {
-  const minX = part.width * part.place.column;
-  const minY = part.width * part.place.row;
-  const element = part;
-  ctx.fillStyle = color;
+// const { coeff: { fullPage, preview }, canvas: { small, large } } = frameSizes;
+// export default function PreviewCanvas({
+//   frame, isFull, addFrameToGif, startgif,
+// }) {
+//   const canvasRef = useRef(null);
+//   const [frameSize, changeFrameSize] = useState(small);
 
-  ctx.fillRect(
-    minX / (frameSize ? 0.5 : 4),
-    minY / (frameSize ? 0.5 : 4),
-    element.width / (frameSize ? 0.5 : 4),
-    element.width / (frameSize ? 0.5 : 4)
-  );
-};
+//   const frameSizeHandler = (value) => changeFrameSize(value);
 
-export default function PreviewCanvas({ frame, isFull }) {
-  const canvasRef = React.useRef(null);
-  const [frameSize, changeFrameSize] = React.useState(128);
-  React.useEffect(() => {
-    if (frame) {
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, frameSize, frameSize);
-      frame.array.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, !!isFull));
-    }
-  }, [frame]);
+//   const drawFrame = (currentFrame, isFullPage, size) => {
+//     const canvas = canvasRef.current;
+//     const ctx = canvas.getContext('2d');
+//     const coeff = isFullPage ? fullPage : preview;
+//     ctx.clearRect(0, 0, size, size);
+//     currentFrame.array.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, coeff));
+//   };
 
-  const frameSizeHandler = (value) => {
-    changeFrameSize(value);
-  };
+//   const getFrame = () => {
+//     const canvas = canvasRef.current;
+//     const ctx = canvas.getContext('2d');
+//     // const imageData = ctx.getImageData(0, 0, frameSize, frameSize);
+//     return Promise.resolve(canvas);
+//   };
 
-  React.useEffect(() => {
-    if (isFull) {
-      frameSizeHandler(1028);
-      const canvas = canvasRef.current;
-      const ctx = canvas.getContext('2d');
-      ctx.clearRect(0, 0, frameSize, frameSize);
-      frame.array.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, !!isFull));
-    }
-  }, [isFull]);
+//   useEffect(() => {
+//     if (frame) {
+//       drawFrame(frame, isFull, frameSize);
+//       if (startgif) {
+//         getFrame().then((ctx) => {
+//           console.log('adding');
+//           addFrameToGif(ctx);
+//         });
+//       }
+//     }
+//   }, [frame, startgif]);
 
-  return (
-    <div className="preview">
-      <canvas ref={canvasRef} width={frameSize} height={frameSize} />
-    </div>
-  );
-}
 
-PreviewCanvas.propTypes = {
-  frame: PropTypes.shape({ id: PropTypes.number, array: PropTypes.array }).isRequired,
-};
+//   useEffect(() => {
+//     if (isFull) {
+//       frameSizeHandler(large);
+//       drawFrame(frame, isFull, frameSize);
+//     }
+//   }, [isFull]);
+
+//   return (
+//     <div className="preview">
+//       <canvas ref={canvasRef} width={frameSize} height={frameSize} />
+//     </div>
+//   );
+// }
+
+// PreviewCanvas.propTypes = {
+//   frame: PropTypes.shape({ id: PropTypes.number, array: PropTypes.array }).isRequired,
+//   isFull: PropTypes.bool.isRequired,
+// };

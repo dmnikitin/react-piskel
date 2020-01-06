@@ -14,8 +14,7 @@ const ButtonsReducer = (state = defaultState, action) => {
         }
       });
       const newState = Object.fromEntries(entries);
-      const thisTool = { [payload.tool]: payload.button };
-      return { ...newState, thisTool };
+      return { ...newState, [payload.tool]: payload.button };
     }
 
     default:

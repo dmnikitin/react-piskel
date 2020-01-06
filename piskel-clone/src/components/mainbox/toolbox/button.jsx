@@ -1,14 +1,17 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { setActiveTool, setPenSize } from '../../../state/ac/tools';
+import PropTypes from 'prop-types';
 
-function Button({ icon, data, onSetActiveTool }) {
+function Button(props) {
+  const {
+    buttons, icon, data, callback,
+  } = props;
   const [state, changeState] = React.useState(false);
   const handleMouseIn = () => changeState(true);
   const handleMouseOut = () => changeState(false);
-  const handleClick = (e) => onSetActiveTool(e.currentTarget.getAttribute('data'));
-
+  const handleClick = (e) => callback(e.currentTarget.getAttribute('data'));
   const className = `${state ? 'tooltip-open' : 'tooltip-closed'} button`;
+  const toolTip = `${data}(${String.fromCharCode(buttons[data])})`;
 
   return (
     <div>
@@ -17,22 +20,26 @@ function Button({ icon, data, onSetActiveTool }) {
         data={data}
         onMouseOver={handleMouseIn}
         onMouseOut={handleMouseOut}
-        onMouseonFocus={handleMouseIn}
+        onFocus={handleMouseIn}
         onBlur={handleMouseOut}
         onClick={handleClick}
       >
         <i className={`fa fa-${icon}`} aria-hidden="true" />
       </button>
       <div>
-        <div className={className}>{data}</div>
+        <div className={className}>{toolTip}</div>
       </div>
     </div>
   );
 }
 
-export default connect(null, (dispatch) => ({
-  onSetActiveTool: (tool) => dispatch(setActiveTool(tool)),
-  onSetPenSize: (size) => dispatch(setPenSize(size)),
+export default connect((state) => ({
+  buttons: state.buttons,
 }))(Button);
 
-// onMouseOver={handleToolTip} onMouseOut={handleToolTip}
+Button.propTypes = {
+  buttons: PropTypes.arrayOf(PropTypes.object).isRequired,
+  icon: PropTypes.string.isRequired,
+  data: PropTypes.string.isRequired,
+  callback: PropTypes.func.isRequired,
+};

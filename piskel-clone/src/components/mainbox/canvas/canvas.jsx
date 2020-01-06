@@ -1,33 +1,15 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { colors, tools, mouseEvents } from '../../../assets/data';
+import { colors, tools, mouseEvents, frameSizes } from '../../../assets/data';
 import './canvas.scss';
 import { setUpdatedFrame } from '../../../state/ac/frames';
 import { setColor } from '../../../state/ac/tools';
-import { createMatrix } from '../../../helpers/canvas';
+import { createMatrix, drawOnCanvas, getCanvasPosition, getCanvasPositionFromId } from '../../../helpers/canvas';
 // get screen width => canvas h/w
 // const LSArray = state.map((val) => val.color).reduce((a,b) => a.concat(b)));
 
 let updatedFrames;
-
-const drawOnCanvas = (ctx, place, color = colors[0], frames) => {
-  const minX = place.width * place.place.column;
-  const minY = place.width * place.place.row;
-  const element = place;
-  element.color = color;
-  ctx.fillStyle = color;
-  ctx.clearRect(minX, minY, element.width, element.width);
-  ctx.fillRect(minX, minY, element.width, element.width);
-  if (frames) {
-    updatedFrames = frames.map((frame) => {
-      if (frame.id === element.id) {
-        return element;
-      }
-      return frame;
-    });
-  }
-};
 
 function Canvas(props) {
   let isSwitched = false;
@@ -59,18 +41,17 @@ function Canvas(props) {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     const x = frames[currentFrame] ? frames[currentFrame].array : [];
     const extendedMatrix = createMatrix(matrixLength, x);
-    extendedMatrix.forEach((curr) => drawOnCanvas(ctx, curr, curr.color));
+    extendedMatrix.forEach((curr) => {      
+      const pixel = getCanvasPositionFromId(curr.id, matrixLength);
+      drawOnCanvas(ctx, pixel, curr.color);
+    });
     changeState(extendedMatrix);
     updatedFrames = [...extendedMatrix];
   };
 
   React.useEffect(() => {
     createFrame();
-  }, [currentFrame]);
-
-  React.useEffect(() => {
-    createFrame();
-  }, [frames]);
+  }, [currentFrame, frames]);
 
   React.useEffect(() => {
     createFrame();
@@ -78,20 +59,8 @@ function Canvas(props) {
   }, []);
 
   const usePen = (e, ctx, color = colors[0]) => {
-    state.forEach((part) => {
-      const minX = part.width * part.place.column;
-      const minY = part.width * part.place.row;
-      const maxX = part.width * part.place.column + part.width;
-      const maxY = part.width * part.place.row + part.width;
-      if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
-        if (e.button === 2) {
-          drawOnCanvas(ctx, part, color, state);
-        } else if (e.button === 0) {
-          drawOnCanvas(ctx, part, color, state);
-        }
-        // drawOnCanvas(ctx, part, e.button ? alternativeColor : primaryColor, state);
-      }
-    });
+    const position = getCanvasPosition(e, matrixLength);
+    drawOnCanvas(ctx, position, color);
   };
 
   const useStroke = (ctx, x1, y1, x2, y2) => {
@@ -193,37 +162,43 @@ function Canvas(props) {
     }
   };
 
-  const useColorPicker = (e, ctx) => {
-    state.forEach((part) => {
-      const minX = part.width * part.place.column;
-      const minY = part.width * part.place.row;
-      const maxX = part.width * part.place.column + part.width;
-      const maxY = part.width * part.place.row + part.width;
-      if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
-        onSetColor(part.color, primaryColor);
-      }
-    });
+  const useColorPicker = (e) => {
+    // state.forEach((part) => {
+    //   const minX = part.width * part.place.column;
+    //   const minY = part.width * part.place.row;
+    //   const maxX = part.width * part.place.column + part.width;
+    //   const maxY = part.width * part.place.row + part.width;
+    //   if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
+    //     onSetColor(part.color, primaryColor);
+    //   }
+    // });    
+    const { id } = getCanvasPosition(e, matrixLength);
+    const { color } = state[id];
+    onSetColor(color, primaryColor);
   };
 
   const useAllToOneColor = (e, ctx) => {
-    const getColor = () => {
-      let color;
-      state.forEach((part) => {
-        const minX = part.width * part.place.column;
-        const minY = part.width * part.place.row;
-        const maxX = part.width * part.place.column + part.width;
-        const maxY = part.width * part.place.row + part.width;
-        if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
-          color = part.color;
-        }
-      });
-      return color;
-    };
-    const color = getColor();
+    // const getColor = () => {
+    //   let color;
+    //   state.forEach((part) => {
+    //     const minX = part.width * part.place.column;
+    //     const minY = part.width * part.place.row;
+    //     const maxX = part.width * part.place.column + part.width;
+    //     const maxY = part.width * part.place.row + part.width;
+    //     if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
+    //       color = part.color;
+    //     }
+    //   });
+    //   return color;
+    // };
+    // const color = getColor();
 
+    const { id } = getCanvasPosition(e, matrixLength);
+    const { color } = state[id];
     state.forEach((part) => {
       if (part.color === color) {
-        drawOnCanvas(ctx, part, primaryColor, state);
+        const position = getCanvasPositionFromId(part.id, matrixLength);
+        drawOnCanvas(ctx, position, primaryColor);
       }
     });
   };
@@ -252,22 +227,23 @@ function Canvas(props) {
     };
 
     state.forEach((val) => {
-      const part = val;
-      part.minX = part.width * part.place.column;
-      part.minY = part.width * part.place.row;
-      part.maxX = part.width * part.place.column + part.width;
-      part.maxY = part.width * part.place.row + part.width;
-      if (
-        e.layerX >= part.minX &&
-        e.layerX < part.maxX &&
-        e.layerY >= part.minY &&
-        e.layerY < part.maxY
-      ) {
-        if (primaryColor !== part.color) {
-          bucketList.push(part);
-          addToBucket(part);
-        }
-      }
+      // const part = val;
+      // part.minX = part.width * part.place.column;
+      // part.minY = part.width * part.place.row;
+      // part.maxX = part.width * part.place.column + part.width;
+      // part.maxY = part.width * part.place.row + part.width;
+      // if (
+      //   e.layerX >= part.minX &&
+      //   e.layerX < part.maxX &&
+      //   e.layerY >= part.minY &&
+      //   e.layerY < part.maxY
+      // ) {
+      //   if (primaryColor !== part.color) {
+      //     bucketList.push(part);
+      //     addToBucket(part);
+      //   }
+      // }
+
     });
     bucketList.forEach((val) => drawOnCanvas(ctx, val, primaryColor, state));
   };
@@ -318,6 +294,8 @@ function Canvas(props) {
     }
     if (e.type === mouseEvents.mouseup) {
       isSwitched = false;
+      // updatedFrames = [...extendedMatrix];
+      console.log(updatedFrames);
       changeState(updatedFrames);
       onSetUpdatedFrame(currentFrame, { id: currentFrame, array: updatedFrames });
       if (activeTool === tools.stroke) {
@@ -340,8 +318,8 @@ function Canvas(props) {
     <div>
       <canvas
         ref={canvasRef}
-        width={512}
-        height={512}
+        width={frameSizes.canvas.medium}
+        height={frameSizes.canvas.medium}
         onMouseMove={mouseHandler}
         onMouseDown={mouseHandler}
         onMouseUp={mouseHandler}
@@ -358,7 +336,7 @@ export default connect(
     alternativeColor: state.tools.colors.alternativeColor,
     activeTool: state.tools.activeTool,
     penSize: state.tools.penSize,
-    matrixLength: 32,
+    matrixLength: frameSizes.matrixLength.basic,
     frames: state.frames.framesArray,
     currentFrame: state.frames.currentFrame,
   }),

@@ -1,10 +1,14 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
 import './toolbox.scss';
 import Modal from 'react-modal';
-import ColorsBox from './colors.jsx';
-import Button from './button.jsx';
-import ChangeControl from './changeControl.jsx';
+import ColorsBox from './colorsBox';
+import Tools from './tools';
+import Pensize from './penSize';
+import CanvasSize from './canvasSize';
+import ChangeControl from './changeControl';
+import { setActiveTool, setPenSize } from '../../../state/ac/tools';
 
 const customStyles = {
   content: {
@@ -17,7 +21,7 @@ const customStyles = {
   },
 };
 
-function Toolbox({ buttons }) {
+function Toolbox({ buttons, onSetActiveTool, onSetPenSize }) {
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -25,29 +29,10 @@ function Toolbox({ buttons }) {
 
   return (
     <section className="toolbox">
-      <div className="toolbox-tools">
-        <Button data="pen" icon="pencil" />
-        <Button data="eraser" icon="eraser" />
-        <Button data="colorPicker" icon="eyedropper" />
-        <Button data="stroke" icon="arrows-h" />
-        <Button data="bucket" icon="shower" />
-        <Button data="allToOneColor" icon="magic" />
-      </div>
-
-      <div className="toolbox-pensize">
-        <span>Choose the pen size</span>
-        <button type="button" data="0">
-          small
-        </button>
-        <button type="button" data="1">
-          medium
-        </button>
-        exposure_plus_2
-        <button type="button" data="2">
-          large
-        </button>
-      </div>
+      <Tools callback={onSetActiveTool} />
       <ColorsBox />
+      <Pensize callback={onSetPenSize} />
+      <CanvasSize />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -56,44 +41,33 @@ function Toolbox({ buttons }) {
       >
         {entries.map((current) => (
           <li>
-            <span>{current[0]}</span> :<span>{String.fromCharCode(current[1])}</span>
+            <span>{current[0]}</span>
+            {' '}
+            :
+            <span>{String.fromCharCode(current[1])}</span>
             <ChangeControl tool={current[0]} />
           </li>
         ))}
-        <button onClick={closeModal}>close</button>
+        <button type="button" onClick={closeModal}>close</button>
       </Modal>
-      <button className="toolbox-controls">
-        <button onClick={openModal}>change keys</button>
-        <button>save</button>
-        <button>resize</button>
-      </button>
+      <section className="toolbox-controls">
+        <button type="button" onClick={openModal}>change keys</button>
+        <button type="button">save</button>
+      </section>
     </section>
   );
 }
 
 export default connect(
   (state) => ({ buttons: state.buttons }),
-  () => {}
+  (dispatch) => ({
+    onSetActiveTool: (tool) => dispatch(setActiveTool(tool)),
+    onSetPenSize: (size) => dispatch(setPenSize(size)),
+  }),
 )(Toolbox);
 
-// ToolbarMeta.defaultProps = {
-//   tags: [],
-// };
-
-// ToolbarMeta.propTypes = {
-//   notes: PropTypes.arrayOf(PropTypes.object).isRequired,
-//   tags: PropTypes.arrayOf(PropTypes.object),
-//   currentNote: PropTypes.shape({
-//       name: PropTypes.string,
-//       content: PropTypes.string,
-//       edited: PropTypes.string,
-//       priority: PropTypes.bool,
-//       location: PropTypes.string,
-//       date: PropTypes.string,
-//       index: PropTypes.number,
-//   }).isRequired,
-//   onDeleteNote: PropTypes.func.isRequired,
-//   onChangeNote: PropTypes.func.isRequired,
-//   onAddTag: PropTypes.func.isRequired,
-//   onToggleDisplay: PropTypes.func.isRequired,
-// };
+Toolbox.propTypes = {
+  buttons: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onSetActiveTool: PropTypes.func.isRequired,
+  onSetPenSize: PropTypes.func.isRequired,
+};

@@ -1,10 +1,13 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
+import PropTypes from 'prop-types';
+import { defaultFrameRate } from '../../../assets/data';
 
-export default function Slider({ frameRateHandler }) {
-  const [value, changeValue] = React.useState(12);
+export default function Slider({ frameRateHandler, frameRate }) {
+  const [value, changeValue] = useState(frameRate);
+
   const handleChange = (e) => {
-    frameRateHandler(e.target.value);
     changeValue(e.target.value);
+    frameRateHandler(e.target.value);
   };
 
   return (
@@ -16,7 +19,7 @@ export default function Slider({ frameRateHandler }) {
       <input
         id="fps"
         type="range"
-        min="0"
+        min="1"
         max="24"
         value={value}
         onChange={handleChange}
@@ -25,3 +28,12 @@ export default function Slider({ frameRateHandler }) {
     </Fragment>
   );
 }
+
+Slider.defaultProps = {
+  frameRate: defaultFrameRate,
+};
+
+Slider.propTypes = {
+  frameRateHandler: PropTypes.func.isRequired,
+  frameRate: PropTypes.number,
+};

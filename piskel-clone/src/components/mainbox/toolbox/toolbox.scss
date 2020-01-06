@@ -1,15 +1,53 @@
 .toolbox {
   grid-area: toolbox;
   display: grid;
-  grid-template-rows: repeat(4, 1fr);
+  grid-template-rows: repeat(5, 1fr);
 
   &-tools {
+   
+    display: grid;
+    grid-template: repeat(2, 1fr) / repeat(3, 1fr);
+    
+    div > button {
+      height: 60%;
+      width: 80%;
+      font-size: 21px;
+      border: 1px solid transparent;
+      border-radius: 50%;
+    }
+   
+  }
+  &-pensize {
     display: flex;
-    flex-wrap: wrap;
-    button {
-      width: 50%;
+    flex-direction: column;
+    div {
+      display: flex;
+      flex-direction: row;
+      button {
+        height: 60%;
+        width: 80%;
+        font-size: 21px;
+        border: 1px solid transparent;
+        border-radius: 50%;
+      }
     }
   }
+  &-canvas {
+    display: flex;
+    flex-direction: column;
+    div {
+      display: flex;
+      flex-direction: row;
+      button {
+        height: 60%;
+        width: 80%;
+        font-size: 21px;
+        border: 1px solid transparent;
+        border-radius: 50%;
+      }
+    }
+  }
+
   &-colors {
     display: flex;
     flex-direction: column;
@@ -50,6 +88,14 @@
 
 .tooltip-open {
   display: block;
+  width: 50px; 
+  height: 30px;    
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 12px;
+  position: relative;
+  margin: 0 auto;
+  word-wrap: break-word; 
 }
 
 .tooltip-closed {

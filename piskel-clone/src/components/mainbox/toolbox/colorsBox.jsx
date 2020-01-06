@@ -1,5 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
+import PropTypes from 'prop-types';
+import ColorsActive from './colorsActive';
 import { setColor } from '../../../state/ac/tools';
 import { colors } from '../../../assets/data';
 
@@ -10,7 +12,7 @@ function ColorsBox(props) {
   return (
     <section className="toolbox-colors">
       <ColorsActive
-        onSetColor={onSetColor}
+        callback={clickHandler}
         primaryColor={primaryColor}
         alternativeColor={alternativeColor}
       />
@@ -31,26 +33,6 @@ function ColorsBox(props) {
   );
 }
 
-function ColorsActive(props) {
-  const { primaryColor, alternativeColor, onSetColor } = props;
-  // React.useEffect(() => {
-  //   console.log('props', props);
-  // }, []);
-  const clickHandler = () => onSetColor(alternativeColor, primaryColor);
-  return (
-    <div className="toolbox-colors-active">
-      <div className="toolbox-colors-active__primary" style={{ background: primaryColor }} />
-      <button type="button" className="toolbox-colors-active__switcher" onClick={clickHandler}>
-        Switch
-      </button>
-      <div
-        className="toolbox-colors-active__alternative"
-        style={{ background: alternativeColor }}
-      />
-    </div>
-  );
-}
-
 export default connect(
   (state) => ({
     primaryColor: state.tools.colors.primaryColor,
@@ -58,5 +40,11 @@ export default connect(
   }),
   (dispatch) => ({
     onSetColor: (primary, alternative) => dispatch(setColor(primary, alternative)),
-  })
+  }),
 )(ColorsBox);
+
+ColorsBox.propTypes = {
+  primaryColor: PropTypes.string.isRequired,
+  alternativeColor: PropTypes.string.isRequired,
+  onSetColor: PropTypes.func.isRequired,
+};

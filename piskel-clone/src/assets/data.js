@@ -58,11 +58,34 @@ const active = {
   penSize: penSize[0],
 };
 
-const frameSize = {
-
+const frameSizes = {
+  width: 512,
+  coeff: {
+    basic: 1,
+    fullPage: 0.5,
+    preview: 4,
+  },
+  matrixLength: {
+    basic: 32,
+    ext: 64,
+    max: 128,
+  },
+  canvas: {
+    small: 128,
+    medium: 512,
+    large: 1024,
+  },
 };
 
-export
-{
-  colors, penSize, tools, active, mouseEvents, keyboardEvents,
+const defaultFrameRate = 12;
+
+export {
+  colors,
+  penSize,
+  tools,
+  active,
+  mouseEvents,
+  keyboardEvents,
+  frameSizes,
+  defaultFrameRate,
 };
