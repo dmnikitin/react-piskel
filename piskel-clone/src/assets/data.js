@@ -6,20 +6,20 @@ const mouseEvents = {
 };
 
 const keyboardEvents = {
-  pen: 80,
-  bucket: 66,
-  stroke: 83,
-  eraser: 69,
-  colorPicker: 67,
-  allToOneColor: 77,
-  exportGif: 71,
-  exportApng: 72,
-  switchColor: 87,
-  resizeCanvas: 82,
-  changePenSize: 90,
-  addFrame: 65,
-  duplicateFrame: 68,
-  deleteFrame: 88,
+  pen: 'p',
+  bucket: 'b',
+  stroke: 'w',
+  eraser: 'e',
+  colorPicker: 'c',
+  allToOneColor: 'm',
+  exportGif: 'g',
+  exportApng: 'h',
+  swap: 's',
+  resizeCanvas: 'r',
+  changePenSize: 'z',
+  add: 'a',
+  duplicate: 'd',
+  delete: 'x',
 };
 
 const colors = {
@@ -34,10 +34,10 @@ const colors = {
   8: '#760fbf',
 };
 
-const penSize = {
-  0: '1px',
-  1: '2px',
-  2: '4px',
+const penSizes = {
+  small: 'small',
+  medium: 'medium',
+  large: 'large',
 };
 
 const tools = {
@@ -55,7 +55,7 @@ const active = {
     alternativeColor: colors[0],
   },
   activeTool: tools.pen,
-  penSize: penSize[0],
+  penSize: penSizes.small,
 };
 
 const frameSizes = {
@@ -81,7 +81,7 @@ const defaultFrameRate = 12;
 
 export {
   colors,
-  penSize,
+  penSizes,
   tools,
   active,
   mouseEvents,

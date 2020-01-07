@@ -11,8 +11,8 @@ function ChangeControl({ tool, onSetButton }) {
   const open = () => changePressed(true);
   const close = () => changePressed(false);
   const changeButton = () => {
-    const x = input.value.toUpperCase().charCodeAt();
-    onSetButton(tool, x);
+    // const x = input.value.toUpperCase().charCodeAt();
+    onSetButton(tool, input.value);
   };
   const submit = () => {
     close();

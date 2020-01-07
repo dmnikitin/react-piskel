@@ -10,8 +10,8 @@ function Button(props) {
   const handleMouseIn = () => changeState(true);
   const handleMouseOut = () => changeState(false);
   const handleClick = (e) => callback(e.currentTarget.getAttribute('data'));
-  const className = `${state ? 'tooltip-open' : 'tooltip-closed'} button`;
-  const toolTip = `${data}(${String.fromCharCode(buttons[data])})`;
+  const className = `${state ? 'tooltip-open' : 'tooltip-closed'} tooltip`;
+  const toolTip = `${data}(${buttons[data]})`;
 
   return (
     <div>
@@ -26,9 +26,9 @@ function Button(props) {
       >
         <i className={`fa fa-${icon}`} aria-hidden="true" />
       </button>
-      <div>
-        <div className={className}>{toolTip}</div>
-      </div>
+
+      <div className={className}>{toolTip}</div>
+
     </div>
   );
 }

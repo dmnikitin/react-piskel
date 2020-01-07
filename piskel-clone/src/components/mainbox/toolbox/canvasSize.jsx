@@ -5,10 +5,10 @@ export default function CanvasSize() {
   return (
     <div className="toolbox-canvas">
       <span>Choose the canvas size</span>
-      <div>
+      <div className="toolbox-canvas__buttons">
         <Button data="basic" icon="square-o" />
         <Button data="medium" icon="plus-square-o" />
-        <Button data="large" icon="square-o" />
+        <Button data="large" icon="plus-square" />
       </div>
     </div>
   );

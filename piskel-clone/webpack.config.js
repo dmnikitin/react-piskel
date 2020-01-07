@@ -21,9 +21,10 @@ module.exports = {
         loader: 'babel-loader',
       },
       {
-        test: /\.scss$/,
+        test: /\.s(a|c)ss$/,
         loader: 'style-loader!css-loader!sass-loader',
       },
+      { test: /\.css$/, loader: 'style-loader!css-loader' },
     ],
   },
   mode: 'production',

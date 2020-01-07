@@ -11,7 +11,7 @@ export default function ColorsActive(props) {
         className="toolbox-colors-active__primary"
         style={{ background: primaryColor }}
       />
-      <Button data="exchange" icon="exchange" callback={clickHandler} />
+      <Button data="swap" icon="exchange" callback={clickHandler} />
       <div
         className="toolbox-colors-active__alternative"
         style={{ background: alternativeColor }}

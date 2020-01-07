@@ -1,36 +1,32 @@
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import Fullscreen from 'react-full-screen';
-import PreviewCanvas from './previewCanvas';
-import Slider from './slider';
-import { changeFrameRate } from '../../../state/ac/frameRate';
-import './preview.scss';
-
-
+// import React, { useState, useEffect } from 'react';
+// import { connect } from 'react-redux';
+// import PropTypes from 'prop-types';
+// import Fullscreen from 'react-full-screen';
 // import CCapture from 'ccapture.js';
+// // import toApng from 'gif-to-apng';
+// import PreviewCanvas from './previewCanvas';
+// import Slider from './slider';
+// import { changeFrameRate } from '../../../state/ac/frameRate';
+// import './preview.scss';
 
 // const capturer = new CCapture({ format: 'gif', workersPath: '../../../../node_modules/ccapture.js/src/' });
-
-
 // const frameRateToInterval = (val) => 1000 / (val - 1);
 
 // // let running = false;
-// let startgif = false;
+// let isStarted = false;
 
 // function Preview({ frames, frameRate, onChangeFrameRate }) {
-//   const [frame, changeFrame] = React.useState(0);
-//   const [isFull, changeFull] = React.useState(false);
-//   const [interval, changeInterval] = React.useState();
+//   const [frame, changeFrame] = useState(0);
+//   const [isFull, changeFull] = useState(false);
+//   const [interval, changeInterval] = useState();
 
 //   const addFrameToGif = (ctx) => {
 //     capturer.capture(ctx);
 //   };
 
 //   const update = () => {
-//     if (frame === frames.length - 1 && frames.length > 1) {
-//     }
-
+//     // if (frame === frames.length - 1 && frames.length > 1) {
+//     // }
 //     changeFrame((state) => {
 //       const newState = state < frames.length - 1 ? state + 1 : 0;
 //       return newState;
@@ -38,8 +34,8 @@ import './preview.scss';
 //   };
 
 
-//   const makeGif = () => {
-//     startgif = true;
+//   const makeGif = (apng) => {
+//     isStarted = true;
 //     capturer.start();
 //     clearInterval(interval);
 //     const frameRateOptimised = frameRateToInterval(frameRate);
@@ -61,10 +57,14 @@ import './preview.scss';
 //         changeFrame(a);
 //       }
 //       if (!a) {
-//         // capturer.stop();
-//         startgif = false;
+//         capturer.stop();
+//         isStarted = false;
 //         capturer.save();
-//         // capturer.save( function( blob ) { /* ... */ } );
+//         // if (apng) {
+//         //   capturer.save((blob) => {
+//         //     // toApng(blob).then(() => console.log('success'))
+//         //   });
+//         // }
 //         clearInterval(intr);
 //       }
 //     }, frameRateOptimised);
@@ -79,23 +79,30 @@ import './preview.scss';
 //     changeInterval(intr);
 //   };
 
-//   React.useEffect(() => {
+//   useEffect(() => {
 //     clearInterval(interval);
 //     const frameRateOptimised = frameRateToInterval(frameRate);
 //     const intr = setInterval(() => update(), frameRateOptimised);
 //     changeInterval(intr);
 //   }, [frames]);
 
+
 //   const goFull = () => changeFull(true);
 
 //   return (
 //     <div className="preview">
-//       <Fullscreen enabled={isFull} onChange={() => changeFull(isFull)}>
-//         <PreviewCanvas isFull={isFull} startgif={startgif} frame={frames[frame]} addFrameToGif={addFrameToGif} />
+//       <Fullscreen enabled={isFull} onChange={(full) => changeFull(full)}>
+//         <PreviewCanvas isFull={isFull} isStarted={isStarted} frame={frames[frame]} addFrameToGif={addFrameToGif} />
 //       </Fullscreen>
 //       <Slider frameRate={frameRate} frameRateHandler={frameRateHandler} />
-//       <button type="button" onClick={goFull}> Full Page </button>
-//       <button type="button" onClick={makeGif}> gif </button>
+//       <div className="preview-buttons">
+//         <span>Animation options</span>
+//         <div className="preview-buttons__wrapper">
+//           <button type="button" onClick={goFull}>Full Page</button>
+//           <button type="button" onClick={makeGif}>Export GIF</button>
+//           <button type="button" onClick={makeGif}>Export APNG</button>
+//         </div>
+//       </div>
 //     </div>
 //   );
 // }

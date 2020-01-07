@@ -1,17 +1,29 @@
 .framebox {
   grid-area: framebox;
-
+  min-width: 200px;
   display: flex;
   flex-direction: column;
 
-  border: 2px solid black;
-
   &-frame {
-    display: flex;
+    display: grid;
+    grid-template-columns: 128px 1fr;
+    margin-bottom: 5px;
 
     &-buttons {
-      display: flex;
-      flex-direction: column;
+      padding-top: 10px;
+    display: grid;
+    justify-content: center;
+    grid-template-rows: repeat(3, 1fr);
+      div {       
+        button {
+          border: 1px solid transparent;
+          border-radius: 50%;
+        }
+        div {
+          font-size: 10px;
+          height: 12px;
+        }
+      }
     }
   }
 }

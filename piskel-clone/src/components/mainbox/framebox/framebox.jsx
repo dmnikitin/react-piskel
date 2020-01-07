@@ -8,12 +8,9 @@ import './framebox.scss';
 import { rearrangeFrames } from '../../../state/ac/frames';
 
 function Framebox({ frames, onRearrangeFrames }) {
-  const moveFrame = useCallback(
-    (dragIndex, hoverIndex) => {
-      onRearrangeFrames(dragIndex, hoverIndex);
-    },
-    [frames]
-  );
+  const moveFrame = useCallback((dragIndex, hoverIndex) => {
+    onRearrangeFrames(dragIndex, hoverIndex);
+  }, [frames]);
   const renderFrame = (frame, index) => (
     <FrameWrapper key={frame.id} index={index} frame={frame} moveFrame={moveFrame} />
   );
@@ -30,7 +27,7 @@ export default connect(
   }),
   (dispatch) => ({
     onRearrangeFrames: (dragIndex, hoverIndex) => dispatch(rearrangeFrames(dragIndex, hoverIndex)),
-  })
+  }),
 )(Framebox);
 
 Framebox.propTypes = {

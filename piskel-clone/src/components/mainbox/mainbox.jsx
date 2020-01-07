@@ -10,7 +10,7 @@ export default function Mainbox() {
     <div className="mainbox">
       <Framebox />
       <Canvas />
-
+      
       <Toolbox />
     </div>
   );

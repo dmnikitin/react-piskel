@@ -42,17 +42,19 @@ function Toolbox({ buttons, onSetActiveTool, onSetPenSize }) {
         {entries.map((current) => (
           <li>
             <span>{current[0]}</span>
-            {' '}
             :
-            <span>{String.fromCharCode(current[1])}</span>
+            <span>{current[1]}</span>
             <ChangeControl tool={current[0]} />
           </li>
         ))}
         <button type="button" onClick={closeModal}>close</button>
       </Modal>
       <section className="toolbox-controls">
-        <button type="button" onClick={openModal}>change keys</button>
-        <button type="button">save</button>
+        <span> Miscellanious </span>
+        <div className="toolbox-controls__buttons">
+          <button type="button" onClick={openModal}>Change CTRLS</button>
+
+        </div>
       </section>
     </section>
   );

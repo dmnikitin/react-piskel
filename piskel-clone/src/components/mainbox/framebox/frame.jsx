@@ -4,7 +4,8 @@ import PropTypes from 'prop-types';
 import { setCurrentFrame, addFrame, deleteFrame } from '../../../state/ac/frames';
 import { createMatrix, drawOnCanvas } from '../../../helpers/canvas';
 import { frameSizes } from '../../../assets/data';
-// import ButtonWrapper
+import Button from '../toolbox/button';
+
 
 const { coeff: { preview }, matrixLength: { basic }, canvas: { small } } = frameSizes;
 
@@ -19,7 +20,14 @@ function Frame(props) {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    frame.array.forEach((curr) => drawOnCanvas(ctx, curr, curr.color, preview));
+    frame.array.forEach((curr) => {
+      const position = {
+        x: curr.width * curr.place.column,
+        y: curr.width * curr.place.row,
+        width: curr.width,
+      };
+      drawOnCanvas(ctx, position, curr.color, preview);
+    });
   }, [frame]);
 
   const addFrameHandler = () => {
@@ -41,15 +49,9 @@ function Frame(props) {
     <div className="framebox-frame">
       <canvas ref={canvasRef} width={small} height={small} onClick={selectFrameHandler} />
       <div className="framebox-frame-buttons">
-        <button type="button" onClick={addFrameHandler}>
-          ADD
-        </button>
-        <button type="button" onClick={duplicateFrameHandler}>
-          DUPL
-        </button>
-        <button type="button" onClick={deleteFrameHandler}>
-          DEL
-        </button>
+        <Button data="add" icon="plus" callback={addFrameHandler} />
+        <Button data="duplicate" icon="copy" callback={duplicateFrameHandler} />
+        <Button data="delete" icon="trash" callback={deleteFrameHandler} />
       </div>
     </div>
   );

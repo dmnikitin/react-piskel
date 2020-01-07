@@ -1,3 +1,23 @@
+
 .preview {
   grid-area: preview;
+
+  
+  &-buttons {
+    display: grid; 
+  grid-template-rows: 20% 80%; 
+   
+   &__wrapper {
+    display: flex;
+    justify-content: space-around;
+      button {
+        height: 50px;
+        width: 55px;
+        font-size: 12px;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        word-wrap: break-word;
+      }
+   } 
+  }
 }

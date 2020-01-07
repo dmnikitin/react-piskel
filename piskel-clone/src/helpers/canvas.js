@@ -12,20 +12,7 @@ const createMatrix = (matrixLength, matrix = []) => {
   return modifiedArray.reduce((a, b) => a.concat(b));
 };
 
-
 const drawOnCanvas = (ctx, position, color, frameSize = frameSizes.coeff.basic) => {
-  // const minX = part.width * part.place.column;
-  // const minY = part.width * part.place.row;
-  // const element = part;
-
-  // console.log(color, frameSize);
-  // ctx.fillRect(
-  //   minX / frameSize,
-  //   minY / frameSize,
-  //   element.width / frameSize,
-  //   element.width / frameSize,
-  // );
-
   ctx.fillStyle = color;
   ctx.fillRect(
     position.x / frameSize,
@@ -36,63 +23,36 @@ const drawOnCanvas = (ctx, position, color, frameSize = frameSizes.coeff.basic) 
 };
 
 const getCanvasPosition = (e, matrixLength) => {
-  const x = Math.floor(e.layerX / matrixLength) * matrixLength;
-  const y = Math.floor(e.layerY / matrixLength) * matrixLength;
-  const column = Math.floor(e.layerX / (matrixLength / 2));
-  const row = Math.floor(e.layerY / (matrixLength / 2));
+  const coeff = matrixLength / 2;
+  const row = Math.floor(e.layerX / coeff);
+  const column = Math.floor(e.layerY / coeff);
+  const x = row * coeff;
+  const y = column * coeff;
+  const id = column * matrixLength + row;
   return {
-    x, y, id: (row * matrixLength) + column, width: matrixLength,
+    x, y, id, width: coeff, row, column,
   };
 };
 
 const getCanvasPositionFromId = (id, matrixLength) => {
+  const coeff = matrixLength / 2;
   const diff = Math.floor(id / matrixLength);
-  const y = diff * (matrixLength / 2);
-  const x = (id - (diff * matrixLength)) * (matrixLength / 2);
+  const y = diff * coeff;
+  const x = (id - (diff * matrixLength)) * coeff;
   return {
-    x, y, id, width: matrixLength,
+    x, y, id, width: coeff,
   };
 };
 
-const framesUpdater = (frames, element) => frames.map((frame) => {
-  if (frame.id === element.id) {
-    return element;
-  }
-  return frame;
-});
-
-const getCoords = (part) => {
-  const minX = part.width * part.place.column;
-  const minY = part.width * part.place.row;
-  const maxX = part.width * part.place.column + part.width;
-  const maxY = part.width * part.place.row + part.width;
-  return {
-    minX,
-    minY,
-    maxX,
-    maxY,
-  };
-};
-
-const getColor = (e, state) => {
-  let color;
-  state.forEach((part) => {
-    const {
-      minX, minY, maxX, maxY,
-    } = getCoords(part);
-    if (e.layerX >= minX && e.layerX < maxX && e.layerY >= minY && e.layerY < maxY) {
-      color = part.color;
-    }
-  });
-  return color;
+const changeUpdated = (input) => {
+  const arr = [...input];
+  return arr;
 };
 
 export {
   createMatrix,
   drawOnCanvas,
-  framesUpdater,
-  getCoords,
-  getColor,
+  changeUpdated,
   getCanvasPosition,
   getCanvasPositionFromId,
 };
