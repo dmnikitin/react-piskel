@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { setCurrentFrame, addFrame, deleteFrame } from '../../../state/ac/frames';
 import { createMatrix, drawOnCanvas } from '../../../helpers/canvas';
 import { frameSizes } from '../../../assets/data';
-import Button from '../toolbox/button';
+import Button from '../button';
 
 
 const { coeff: { preview }, matrixLength: { basic }, canvas: { small } } = frameSizes;

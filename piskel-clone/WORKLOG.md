@@ -9,3 +9,5 @@
 | 02.01.2020 | 02.01.2020 | 2hr        | implement keyboard events, modal window                      |
 | 03.01.2020 | 04.01.2020 | 4hr        | implement drag and drop, various bug fixes                   |
 | 05.01.2020 | 06.01.2020 | 10hr       | implement gif export, correct drawing technique              |
+| 07.01.2020 | 07.01.2020 | 6hr        | drawing bugfixes, implement pensize change, markup           |
+| 07.01.2020 | 08.01.2020 | 3hr        | add landing page, auth logic                                 |
