@@ -1,30 +1,49 @@
 
-import React from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
+import React, { useContext } from 'react';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import { withRouter } from 'react-router-dom';
+import { AuthContext } from '../app/App';
 import './navbar.scss';
-import { Link } from 'react-router-dom';
-import { useAuth0 } from '../react-auth0-spa';
 
-const NavBar = () => {
-  const { isAuthenticated, loginWithRedirect, logout } = useAuth0();
+const NavBar = ({ isLoggedIn, history }) => {
+  const Auth = useContext(AuthContext);
+  const signInWithGoogle = () => {
+    const provider = new firebase.auth.GoogleAuthProvider();
+    firebase
+      .auth()
+      .setPersistence(firebase.auth.Auth.Persistence.SESSION)
+      .then(() => {
+        firebase
+          .auth()
+          .signInWithPopup(provider)
+          .then(() => {
+            history.push('/piskel');
+            Auth.setLoggedIn(true);
+          })
+          .catch((e) => console.log(e.message));
+      });
+  };
+
+  const signOut = () => {
+    firebase.auth().signOut().then(() => {
+      history.push('/');
+      Auth.setLoggedIn(false);
+    }).catch((e) => console.log(e.message));
+  };
+
 
   return (
-    <div className="navbar">
-      {!isAuthenticated && (
-        <button onClick={() => loginWithRedirect({})}>Log in</button>
+    <header className="navbar">
+      Piskel app.
+      {isLoggedIn && <button onClick={() => signOut()} className="auth-button" type="button">logout</button>}
+      {!isLoggedIn && (
+        <button onClick={() => signInWithGoogle()} className="auth-button" type="button">
+          Log in With Google
+        </button>
       )}
-
-      {isAuthenticated && <button onClick={() => logout()}>Log out</button>}
-      {isAuthenticated && (
-        <span>
-          <Link to="/">Home</Link>
-          &nbsp;
-        <Link to="/piskel">Piskel</Link>
-        </span>
-      )}
-    </div>
+    </header>
   );
 };
 
-export default NavBar;
+export default withRouter(NavBar);

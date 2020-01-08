@@ -1,26 +1,51 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Router, Route, Switch } from 'react-router-dom';
-import { useAuth0 } from '../../react-auth0-spa';
-import Main from '../main/Main';
-import NavBar from '../navbar/navbar';
-import history from '../../utils/history';
-import PrivateRoute from './privateRoute';
+import Main from '../mainbox/Main';
+import LandingPage from '../landing/LandingPage';
+import PrivateRoute from '../PrivateRoute';
+import './App.scss';
+import { createBrowserHistory } from 'history';
+// import * as firebase from 'firebase';
+import * as firebase from 'firebase/app';
+import 'firebase/auth';
+import firebaseConfig from '../../firebase.config';
+import NavBar from '../navbar/Navbar';
 
-function App() {
+firebase.initializeApp(firebaseConfig);
+
+export const AuthContext = React.createContext(null);
+
+export function App() {
+  const [isLoggedIn, setLoggedIn] = useState(false);
+  function readSession() {
+    const user = window.sessionStorage.getItem(
+      `firebase:authUser:${firebaseConfig.apiKey}:[DEFAULT]`,
+    );
+    if (user) setLoggedIn(true);
+  }
+  useEffect(() => {
+    readSession();
+  }, []);
+
+  useEffect(() => {
+    console.log('logged');
+  }, [isLoggedIn]);
+
   return (
-    <div className="App">
-      {/* Don't forget to include the history module */}
-      <Router history={history}>
-        <header>
-          <NavBar />
-        </header>
-        <Switch>
-          <Route path="/" exact />
-          <PrivateRoute path="/piskel" component={Main} />
-        </Switch>
+    <AuthContext.Provider value={{ isLoggedIn, setLoggedIn }}>
+      <Router history={createBrowserHistory()}>
+        <div className="App">
+          <NavBar isLoggedIn={isLoggedIn} />
+          {isLoggedIn && <Main />}
+          {!isLoggedIn && <LandingPage />}
+        </div>
       </Router>
-    </div>
+    </AuthContext.Provider>
   );
 }
 
-export default App;
+
+// <Switch>
+// <Route exact path="/" component={() => <LandingPage isLoggedIn={isLoggedIn} />} />
+// <PrivateRoute path="/piskel" component={Main} isLoggedIn={isLoggedIn} />
+// </Switch>

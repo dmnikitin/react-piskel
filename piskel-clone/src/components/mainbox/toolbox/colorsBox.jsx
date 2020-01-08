@@ -8,11 +8,12 @@ import { colors } from '../../../assets/data';
 function ColorsBox(props) {
   const { onSetColor, primaryColor, alternativeColor } = props;
   const clickHandler = (e) => onSetColor(colors[e], primaryColor);
+  const swapColor = () => onSetColor(alternativeColor, primaryColor);
 
   return (
     <section className="toolbox-colors">
       <ColorsActive
-        callback={clickHandler}
+        callback={swapColor}
         primaryColor={primaryColor}
         alternativeColor={alternativeColor}
       />

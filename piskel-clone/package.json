@@ -30,8 +30,8 @@
     }
   },
   "dependencies": {
-    "@auth0/auth0-spa-js": "^1.6.1",
     "ccapture.js": "github:aceslowman/ccapture.js#npm-fix",
+    "firebase": "^7.6.1",
     "gif-to-apng": "^0.1.2",
     "history": "^4.10.1",
     "prop-types": "^15.7.2",
