@@ -54,7 +54,7 @@ function Toolbox({ buttons, onSetActiveTool, onSetPenSize }) {
         <button type="button" onClick={closeModal}>close</button>
       </Modal>
       <section className="toolbox-controls">
-        <h3> Miscellanious </h3>
+        <h3> Miscellaneous </h3>
         <div className="toolbox-controls__buttons">
           <button type="button" onClick={openModal}>Change CTRLS</button>
         </div>

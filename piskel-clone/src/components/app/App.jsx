@@ -10,7 +10,6 @@ import LandingPage from '../landing/LandingPage';
 import './App.scss';
 
 firebase.initializeApp(firebaseConfig);
-console.log('TCL: firebase', firebase);
 
 export const AuthContext = React.createContext(null);
 
@@ -32,9 +31,9 @@ export function App() {
       <Router history={createBrowserHistory()}>
         <div className="App">
           <NavBar isLoggedIn={isLoggedIn} />
-          {/* {isLoggedIn && <Main />}
-          {!isLoggedIn && <LandingPage />} */}
-          <LandingPage />
+          {isLoggedIn && <Main />}
+          {!isLoggedIn && <LandingPage />}
+          {/* <LandingPage /> */}
         </div>
       </Router>
     </AuthContext.Provider>

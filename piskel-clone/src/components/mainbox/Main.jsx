@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Framebox from './framebox/framebox';
@@ -10,9 +10,10 @@ import { setActiveTool, setPenSize, setColor } from '../../state/ac/tools';
 import { setCurrentFrame, addFrame, deleteFrame } from '../../state/ac/frames';
 import { createMatrix } from '../../helpers/canvas';
 import { keyboardEvents, frameSizes, penSizes } from '../../assets/data';
+import store from '../../state/store';
+import { saveToLocalStorage } from '../../helpers/localStorageHandler';
 
 const { matrixLength: { basic } } = frameSizes;
-
 
 function Main(props) {
   const {
@@ -32,8 +33,14 @@ function Main(props) {
 
   let isGif = false;
 
-  React.useEffect(() => {
+  useEffect(() => {
     nameInput.focus();
+  }, []);
+
+  useEffect(() => () => {
+    const state = store.getState();
+    console.log('TCL: Main -> state', state);
+    store.subscribe(() => saveToLocalStorage(state));
   }, []);
 
   const handleKeyPress = (event) => {
@@ -84,7 +91,8 @@ function Main(props) {
     <div
       className="mainbox"
       onKeyDown={handleKeyPress}
-      tabIndex="1"
+      tabIndex="0"
+      role="button"
       ref={(input) => {
         nameInput = input;
       }}
@@ -112,8 +120,6 @@ export default connect((state) => ({
   onDeleteFrame: (frame) => dispatch(deleteFrame(frame)),
 }))(Main);
 
-// store.subscribe(() => saveToLocalStorage(store.getState()));
-
 Main.propTypes = {
   buttons: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSetActiveTool: PropTypes.func.isRequired,
@@ -121,4 +127,8 @@ Main.propTypes = {
   onSetCurrentFrame: PropTypes.func.isRequired,
   onAddFrame: PropTypes.func.isRequired,
   onDeleteFrame: PropTypes.func.isRequired,
+  colors: PropTypes.shape({
+    primaryColor: PropTypes.string.isRequired,
+    alternativeColor: PropTypes.string.isRequired,
+  }).isRequired,
 };

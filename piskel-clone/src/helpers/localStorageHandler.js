@@ -1,4 +1,4 @@
-import { active } from '../assets/data';
+import { active, defaultFrameRate, keyboardEvents } from '../assets/data';
 
 const getFromLocalStorage = () => {
   try {
@@ -7,12 +7,10 @@ const getFromLocalStorage = () => {
     if (parsed === null) {
       return undefined;
     }
-    if (!Object.prototype.hasOwnProperty.call(parsed, 'active')) storage.active = active;
-    if (!Object.prototype.hasOwnProperty.call(parsed, 'frames'))
-      storage.frames = { framesArray: [], currentFrame: 0 };
-    // if (!Object.prototype.hasOwnProperty.call(parsed, 'matrix')) storage.matrix = [];
-    // if (!Object.prototype.hasOwnProperty.call(parsed, 'matrixLength')) storage.matrixLength = 32;
-    // if (!Object.prototype.hasOwnProperty.call(parsed, 'image')) storage.image = null;
+    if (!Object.prototype.hasOwnProperty.call(parsed, 'tools')) storage.tools = active;
+    if (!Object.prototype.hasOwnProperty.call(parsed, 'frames')) storage.frames = { framesArray: [], currentFrame: 0 };
+    if (!Object.prototype.hasOwnProperty.call(parsed, 'buttons')) storage.buttons = keyboardEvents;
+    if (!Object.prototype.hasOwnProperty.call(parsed, 'framerate')) storage.matrixLength = defaultFrameRate;
     return storage;
   } catch (err) {
     return undefined;
