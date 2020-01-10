@@ -11,3 +11,7 @@
 | 05.01.2020 | 06.01.2020 | 10hr       | implement gif export, correct drawing technique              |
 | 07.01.2020 | 07.01.2020 | 6hr        | drawing bugfixes, implement pensize change, markup           |
 | 07.01.2020 | 08.01.2020 | 3hr        | add landing page, auth logic                                 |
+| 08.01.2020 | 10.01.2020 | 6hr        | fix issues with sprites fps, gif, add local storage          |
+| 11.01.2020 | 11.01.2020 | 5hr        | add test coverage for components, reducers                   |
+
+total: 51 hr

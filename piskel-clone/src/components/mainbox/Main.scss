@@ -1,14 +1,23 @@
 .mainbox {
   height: 100%;
   display: grid;
-  grid-template: 30% 70% / 15% 65% 15%;
+  width: 90%;
+  max-width: 1100px;
+  margin: 0 auto;
+  grid-template: 35% 65% / 15% 70% 15%;
   grid-template-areas:
     'framebox canvas preview'
     'framebox canvas toolbox';
+    &:focus{
+      outline: none;
+  }
+  padding: 20px 20px 0 20px;
+  border-left: 1px solid grey;
+  border-right: 1px solid grey;
 }
 
 .tooltip {
-  width: 30px;
-  height: 10px;
+  width: 50px;
+  height: 20px;
   font-size: 10px;;
 }

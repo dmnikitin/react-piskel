@@ -21,9 +21,13 @@
     ],
     "verbose": true,
     "clearMocks": true,
-    "collectCoverage": true,
+    "collectCoverageFrom": [
+      "src/**/*.js",
+      "src/**/*.jsx"
+    ],
     "transform": {
-      "^.+\\.js$": "babel-jest"
+      "^.+\\.js$": "babel-jest",
+      "^.+\\.jsx$": "babel-jest"
     },
     "moduleNameMapper": {
       "^.+\\.(css|less|scss)$": "babel-jest"
@@ -51,6 +55,7 @@
     "start": "webpack-dev-server --open",
     "build": "webpack --mode production",
     "test": "jest",
+    "coverage:full": "jest --coverage --coverage-reporters=lcov",
     "lint": "eslint ."
   },
   "keywords": [],

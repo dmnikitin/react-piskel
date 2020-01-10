@@ -1,11 +1,12 @@
 
 .preview {
   grid-area: preview;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 
   
-  &-buttons {
-    display: grid; 
-  grid-template-rows: 20% 80%; 
+  &-buttons {    
    
    &__wrapper {
     display: flex;

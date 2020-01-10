@@ -3,80 +3,49 @@ import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Fullscreen from 'react-full-screen';
 import CCapture from 'ccapture.js';
-// import toApng from 'gif-to-apng';
 import PreviewCanvas from './previewCanvas';
 import Slider from './slider';
 import { changeFrameRate } from '../../../state/ac/frameRate';
 import './preview.scss';
 
-const capturer = new CCapture({ format: 'gif', workersPath: '../../../../node_modules/ccapture.js/src/' });
-const frameRateToInterval = (val) => 1000 / (val - 1);
-
-// let running = false;
+const frameRateToInterval = (val) => 1000 / val;
 let isStarted = false;
-
-function Preview({ frames, frameRate, isGif, onChangeFrameRate }) {
+let count = 0;
+function Preview(props) {
+  const {
+    frames, frameRate, isGif, onChangeFrameRate,
+  } = props;
   const [frame, changeFrame] = useState(0);
   const [isFull, changeFull] = useState(false);
   const [interval, changeInterval] = useState();
+  const [capturer, changeCapturer] = useState();
+
+  const update = () => changeFrame((state) => {
+    const newState = state < frames.length - 1 ? state + 1 : 0;
+    return newState;
+  });
 
   const addFrameToGif = (ctx) => {
     capturer.capture(ctx);
+    count += 1;
   };
 
- useEffect( ()=>{
-  if (isGif) makeGif()
- }, [isGif]);
-
-  const update = () => {
-    // if (frame === frames.length - 1 && frames.length > 1) {
-    // }
-    changeFrame((state) => {
-      const newState = state < frames.length - 1 ? state + 1 : 0;
-      return newState;
-    });
-  };
-
-
-  const makeGif = (apng) => {
+  const makeGif = () => {
     isStarted = true;
+    changeFrame(0);
     capturer.start();
-    clearInterval(interval);
-    const frameRateOptimised = frameRateToInterval(frameRate);
-
-    const counter = () => {
-      let i = -1;
-      return () => {
-        if (i < frames.length - 1) {
-          i += 1;
-          return i;
-        }
-      };
-    };
-    const count = counter();
-
-    const intr = setInterval(() => {
-      const a = count();
-      if (a) {
-        changeFrame(a);
-      }
-      if (!a) {
-        capturer.stop();
-        isStarted = false;
-        capturer.save();
-        // if (apng) {
-        //   capturer.save((blob) => {
-        //     // toApng(blob).then(() => console.log('success'))
-        //   });
-        // }
-        clearInterval(intr);
-      }
-    }, frameRateOptimised);
-    changeInterval(intr);
+    setTimeout(() => {
+      capturer.stop();
+      isStarted = false;
+      capturer.save();
+      changeCapturer({});
+    }, (1000 / frameRate) * frames.length);
   };
 
-  const frameRateHandler = (val) => {
-    onChangeFrameRate(val);
+  const frameRateHandler = (val) => onChangeFrameRate(val);
+  const goFull = () => changeFull(true);
+
+  const intervalHandler = () => {
     clearInterval(interval);
     const frameRateOptimised = frameRateToInterval(frameRate);
     const intr = setInterval(() => update(), frameRateOptimised);
@@ -84,27 +53,38 @@ function Preview({ frames, frameRate, isGif, onChangeFrameRate }) {
   };
 
   useEffect(() => {
-    clearInterval(interval);
-    const frameRateOptimised = frameRateToInterval(frameRate);
-    const intr = setInterval(() => update(), frameRateOptimised);
-    changeInterval(intr);
-  }, [frames]);
+    if (frameRate || frames) {
+      intervalHandler();
+      const newCapt = new CCapture({
+        format: 'gif', framerate: frameRate, verbose: true, workersPath: '../../../../node_modules/ccapture.js/src/',
+      });
+      changeCapturer(newCapt);
+      return () => { };
+    }
+    return () => { };
+  }, [frameRate, frames]);
 
-
-  const goFull = () => changeFull(true);
+  useEffect(() => {
+    if (isGif) makeGif();
+  }, [isGif]);
 
   return (
     <div className="preview">
       <Fullscreen enabled={isFull} onChange={(full) => changeFull(full)}>
-        <PreviewCanvas isFull={isFull} isStarted={isStarted} frame={frames[frame]} addFrameToGif={addFrameToGif} />
+        <PreviewCanvas
+          isFull={isFull}
+          isStarted={isStarted}
+          frame={frames[frame]}
+          frames={frames}
+          addFrameToGif={addFrameToGif}
+          count={count}
+        />
       </Fullscreen>
       <Slider frameRate={frameRate} frameRateHandler={frameRateHandler} />
       <div className="preview-buttons">
-        <span>Animation options</span>
         <div className="preview-buttons__wrapper">
           <button type="button" onClick={goFull}>Full Page</button>
           <button type="button" onClick={makeGif}>Export GIF</button>
-          <button type="button" onClick={makeGif}>Export APNG</button>
         </div>
       </div>
     </div>
@@ -125,4 +105,5 @@ Preview.propTypes = {
   frames: PropTypes.arrayOf(PropTypes.object),
   frameRate: PropTypes.number.isRequired,
   onChangeFrameRate: PropTypes.func.isRequired,
+  isGif: PropTypes.bool.isRequired,
 };

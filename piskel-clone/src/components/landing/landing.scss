@@ -1,0 +1,27 @@
+.landing {
+  display: grid;
+  grid-template-areas: 'overview screenshot'
+                  'gifs gifs';
+  grid-template-rows: 1fr 1fr;
+  grid-template-columns: 1fr 1fr;
+
+  li {
+    list-style-type: none;
+
+  }
+    &-overview {
+      grid-area: overview;
+    }
+    &-screen {
+      grid-area: screenshot;
+      max-width: 500px;
+    }
+    &-gifs {
+      grid-area: gifs;
+      display: flex;
+      justify-content: space-evenly;
+      img {
+        border: 1px solid;
+      }
+    }
+}

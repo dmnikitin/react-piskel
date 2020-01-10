@@ -4,7 +4,7 @@ import Button from '../button';
 export default function CanvasSize() {
   return (
     <div className="toolbox-canvas">
-      <span>Choose the canvas size</span>
+      <h3>Choose the canvas size</h3>
       <div className="toolbox-canvas__buttons">
         <Button data="basic" icon="square-o" />
         <Button data="medium" icon="plus-square-o" />

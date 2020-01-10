@@ -7,13 +7,15 @@ import { AuthContext } from '../app/App';
 import './navbar.scss';
 
 const NavBar = ({ isLoggedIn, history }) => {
+  console.log('nvabar render');
   const Auth = useContext(AuthContext);
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase
       .auth()
       .setPersistence(firebase.auth.Auth.Persistence.SESSION)
-      .then(() => {
+      .then((res) => {
+        console.log(res);
         firebase
           .auth()
           .signInWithPopup(provider)

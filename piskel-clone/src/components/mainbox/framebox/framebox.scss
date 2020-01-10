@@ -16,6 +16,7 @@
     grid-template-rows: repeat(3, 1fr);
       div {       
         button {
+          background-color: transparent;
           border: 1px solid transparent;
           border-radius: 50%;
         }

@@ -12,6 +12,7 @@ function ColorsBox(props) {
 
   return (
     <section className="toolbox-colors">
+      <h3>Colorbox</h3>
       <ColorsActive
         callback={swapColor}
         primaryColor={primaryColor}

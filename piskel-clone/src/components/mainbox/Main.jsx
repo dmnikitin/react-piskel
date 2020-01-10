@@ -89,10 +89,9 @@ function Main(props) {
         nameInput = input;
       }}
     >
-
       <Framebox />
       <Canvas />
-      {/* <Preview isGif={isGif} /> */}
+      <Preview isGif={isGif} />
       <Toolbox />
     </div>
   );

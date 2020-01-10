@@ -18,6 +18,10 @@ const customStyles = {
     bottom: 'auto',
     marginRight: '-50%',
     transform: 'translate(-50%, -50%)',
+    listStyleType: 'none',
+  },
+  button: {
+    width: '150px',
   },
 };
 
@@ -29,6 +33,7 @@ function Toolbox({ buttons, onSetActiveTool, onSetPenSize }) {
 
   return (
     <section className="toolbox">
+      <h3>Toolbox</h3>
       <Tools callback={onSetActiveTool} />
       <ColorsBox />
       <Pensize callback={onSetPenSize} />
@@ -40,20 +45,18 @@ function Toolbox({ buttons, onSetActiveTool, onSetPenSize }) {
         contentLabel="Example Modal"
       >
         {entries.map((current) => (
-          <li>
-            <span>{current[0]}</span>
-            :
-            <span>{current[1]}</span>
+          <li key={`button-${current}`}>
+            <span>{`${current[0]} :  `}</span>
+            <span className="modal-accent">{`${current[1].toUpperCase()}  `}</span>
             <ChangeControl tool={current[0]} />
           </li>
         ))}
         <button type="button" onClick={closeModal}>close</button>
       </Modal>
       <section className="toolbox-controls">
-        <span> Miscellanious </span>
+        <h3> Miscellanious </h3>
         <div className="toolbox-controls__buttons">
           <button type="button" onClick={openModal}>Change CTRLS</button>
-
         </div>
       </section>
     </section>
