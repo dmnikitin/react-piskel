@@ -7,16 +7,17 @@ import { frameSizes } from '../../../assets/data';
 import Button from '../button';
 
 
-const { coeff: { preview }, matrixLength: { basic }, canvas: { small } } = frameSizes;
+const { coeff: { preview }, canvas: { small } } = frameSizes;
 
 function Frame(props) {
   const {
-    frame, index, onDeleteFrame, onSetCurrentFrame, onAddFrame,
+    frame, index, onDeleteFrame, onSetCurrentFrame, onAddFrame, matrixLength,
   } = props;
   const canvasRef = useRef(null);
   const id = index + 1;
 
   useEffect(() => {
+    console.log('frame', frame);
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -31,13 +32,13 @@ function Frame(props) {
   }, [frame]);
 
   const addFrameHandler = () => {
-    const newFrame = { id, array: createMatrix(basic) };
+    const newFrame = { id, array: createMatrix(matrixLength) };
     onAddFrame(id, newFrame);
     onSetCurrentFrame(id);
   };
 
   const duplicateFrameHandler = () => {
-    const duplicate = { id, array: createMatrix(basic, frame.array) };
+    const duplicate = { id, array: createMatrix(matrixLength, frame.array) };
     onAddFrame(id, duplicate);
     onSetCurrentFrame(id);
   };
@@ -69,4 +70,5 @@ Frame.propTypes = {
   onDeleteFrame: PropTypes.func.isRequired,
   onSetCurrentFrame: PropTypes.func.isRequired,
   onAddFrame: PropTypes.func.isRequired,
+  matrixLength: PropTypes.number.isRequired,
 };

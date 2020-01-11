@@ -7,12 +7,18 @@ import FrameWrapper from './frameWrapper';
 import './framebox.scss';
 import { rearrangeFrames } from '../../../state/ac/frames';
 
-function Framebox({ frames, onRearrangeFrames }) {
+function Framebox({ frames, onRearrangeFrames, matrixLength }) {
   const moveFrame = useCallback((dragIndex, hoverIndex) => {
     onRearrangeFrames(dragIndex, hoverIndex);
   }, [frames]);
   const renderFrame = (frame, index) => (
-    <FrameWrapper key={frame.id} index={index} frame={frame} moveFrame={moveFrame} />
+    <FrameWrapper
+      key={frame.id}
+      index={index}
+      frame={frame}
+      matrixLength={matrixLength}
+      moveFrame={moveFrame}
+    />
   );
   return (
     <DndProvider backend={Backend}>
@@ -24,6 +30,7 @@ function Framebox({ frames, onRearrangeFrames }) {
 export default connect(
   (state) => ({
     frames: state.frames.framesArray,
+    matrixLength: state.tools.canvasSize,
   }),
   (dispatch) => ({
     onRearrangeFrames: (dragIndex, hoverIndex) => dispatch(rearrangeFrames(dragIndex, hoverIndex)),
@@ -33,4 +40,5 @@ export default connect(
 Framebox.propTypes = {
   frames: PropTypes.arrayOf(PropTypes.object).isRequired,
   onRearrangeFrames: PropTypes.func.isRequired,
+  matrixLength: PropTypes.number.isRequired,
 };

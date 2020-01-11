@@ -1,14 +1,12 @@
 import { colors, frameSizes } from '../assets/data';
 
-const createMatrix = (matrixLength, matrix = []) => {
+const createMatrix = (matrixLength = frameSizes.matrixLength.init, matrix = []) => {
   const modifiedArray = Array.from({ length: matrixLength },
     (val, ind) => Array.from({ length: matrixLength },
       (newVal, index) => {
-        let color;
+        let color = colors['0'];
         if (matrix.length && matrix[ind * matrixLength + index]) {
           color = matrix[ind * matrixLength + index].color;
-        } else {
-          [color] = colors;
         }
         return ({
           id: ind * matrixLength + index,

@@ -35,7 +35,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
     }),
-    new CopyWebpackPlugin([{ from: 'src/assets', to: 'assets' }]),
+    new CopyWebpackPlugin([{ from: 'src/assets', to: 'src/assets' }]),
     new webpack.LoaderOptionsPlugin({
       minimize: true,
       debug: false,
