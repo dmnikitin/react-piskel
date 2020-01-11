@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`tools component renders correctly 1`] = `
+<div
+  className="toolbox-tools"
+>
+  <Button
+    callback={[Function]}
+    data="pen"
+    icon="pencil"
+  />
+  <Button
+    callback={[Function]}
+    data="eraser"
+    icon="eraser"
+  />
+  <Button
+    callback={[Function]}
+    data="colorPicker"
+    icon="eyedropper"
+  />
+  <Button
+    callback={[Function]}
+    data="stroke"
+    icon="arrows-h"
+  />
+  <Button
+    callback={[Function]}
+    data="bucket"
+    icon="shower"
+  />
+  <Button
+    callback={[Function]}
+    data="allToOneColor"
+    icon="magic"
+  />
+</div>
+`;

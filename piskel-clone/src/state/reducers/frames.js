@@ -5,8 +5,8 @@ import {
   DELETE_FRAME,
   REARRANGE_FRAMES,
 } from '../variables';
+import { defaultState } from '../../assets/data';
 
-const defaultState = { framesArray: [], currentFrame: 0 };
 const FramesReducer = (state = defaultState, action) => {
   const { type, payload } = action;
   const newArray = [...state.framesArray];

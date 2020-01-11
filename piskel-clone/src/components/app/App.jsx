@@ -9,6 +9,7 @@ import NavBar from '../navbar/Navbar';
 import LandingPage from '../landing/LandingPage';
 import './App.scss';
 
+
 firebase.initializeApp(firebaseConfig);
 
 export const AuthContext = React.createContext(null);
@@ -39,3 +40,5 @@ export function App() {
     </AuthContext.Provider>
   );
 }
+
+

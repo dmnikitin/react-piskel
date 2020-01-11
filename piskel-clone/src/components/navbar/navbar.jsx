@@ -7,7 +7,6 @@ import { AuthContext } from '../app/App';
 import './navbar.scss';
 
 const NavBar = ({ isLoggedIn, history }) => {
-  console.log('nvabar render');
   const Auth = useContext(AuthContext);
   const signInWithGoogle = () => {
     const provider = new firebase.auth.GoogleAuthProvider();
@@ -15,7 +14,6 @@ const NavBar = ({ isLoggedIn, history }) => {
       .auth()
       .setPersistence(firebase.auth.Auth.Persistence.SESSION)
       .then((res) => {
-        console.log(res);
         firebase
           .auth()
           .signInWithPopup(provider)
@@ -23,7 +21,7 @@ const NavBar = ({ isLoggedIn, history }) => {
             history.push('/piskel');
             Auth.setLoggedIn(true);
           })
-          .catch((e) => console.log(e.message));
+          .catch((e) => { throw new Error(e.message); });
       });
   };
 
@@ -31,7 +29,7 @@ const NavBar = ({ isLoggedIn, history }) => {
     firebase.auth().signOut().then(() => {
       history.push('/');
       Auth.setLoggedIn(false);
-    }).catch((e) => console.log(e.message));
+    }).catch((e) => { throw new Error(e.message); });
   };
 
 

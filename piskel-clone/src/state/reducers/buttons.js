@@ -1,5 +1,6 @@
 import { UPDATE_BUTTON } from '../variables';
 import { keyboardEvents } from '../../assets/data';
+import fromEntries from 'object.fromentries';
 
 const defaultState = keyboardEvents;
 const ButtonsReducer = (state = defaultState, action) => {
@@ -13,7 +14,7 @@ const ButtonsReducer = (state = defaultState, action) => {
           newVal[1] = '';
         }
       });
-      const newState = Object.fromEntries(entries);
+      const newState = fromEntries(entries);
       return { ...newState, [payload.tool]: payload.button };
     }
 

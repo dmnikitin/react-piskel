@@ -10,10 +10,8 @@ function ChangeControl({ tool, onSetButton }) {
   const onChangeInput = (e) => changeInput({ value: e.target.value });
   const open = () => changePressed(true);
   const close = () => changePressed(false);
-  const changeButton = () => {
-    // const x = input.value.toUpperCase().charCodeAt();
-    onSetButton(tool, input.value);
-  };
+  const changeButton = () => onSetButton(tool, input.value);
+
   const submit = () => {
     close();
     changeButton();

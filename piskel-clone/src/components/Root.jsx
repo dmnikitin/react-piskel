@@ -12,5 +12,3 @@ function Root() {
 }
 
 export default Root;
-
-// store.subscribe(() => saveToLocalStorage(store.getState()));

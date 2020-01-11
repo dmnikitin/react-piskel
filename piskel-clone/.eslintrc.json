@@ -1,13 +1,20 @@
 {
   "parser": "babel-eslint",
-  "extends": ["airbnb", "plugin:react/recommended"],
+  "extends": [
+    "airbnb",
+    "plugin:react/recommended"
+  ],
   "env": {
     "browser": true,
     "node": true,
-    "jest": true,
+    "jest/globals": true,
     "es6": true
   },
-  "plugins": ["react", "jsx-a11y"],
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "jest"
+  ],
   "parserOptions": {
     "ecmaVersion": 6,
     "sourceType": "module",
@@ -26,6 +33,12 @@
   },
   "rules": {
     "linebreak-style": 0,
-    "import/no-unresolved": [2, { "caseSensitive": false }]
+    "import/no-unresolved": [
+      2,
+      {
+        "caseSensitive": false
+      }
+    ],
+    "import/no-cycle": 0,
   }
 }

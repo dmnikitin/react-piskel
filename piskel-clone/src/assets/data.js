@@ -78,6 +78,7 @@ const frameSizes = {
 };
 
 const defaultFrameRate = 12;
+const defaultState = { framesArray: [], currentFrame: 0 };
 
 export {
   colors,
@@ -88,4 +89,5 @@ export {
   keyboardEvents,
   frameSizes,
   defaultFrameRate,
+  defaultState,
 };
