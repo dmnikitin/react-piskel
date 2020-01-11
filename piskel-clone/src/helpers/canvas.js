@@ -3,12 +3,20 @@ import { colors, frameSizes } from '../assets/data';
 const createMatrix = (matrixLength, matrix = []) => {
   const modifiedArray = Array.from({ length: matrixLength },
     (val, ind) => Array.from({ length: matrixLength },
-      (newVal, index) => ({
-        id: ind * matrixLength + index,
-        width: frameSizes.width / matrixLength,
-        place: { row: ind, column: index },
-        color: matrix.length ? matrix[ind * matrixLength + index].color : colors[0],
-      })));
+      (newVal, index) => {
+        let color;
+        if (matrix.length && matrix[ind * matrixLength + index]) {
+          color = matrix[ind * matrixLength + index].color;
+        } else {
+          [color] = colors;
+        }
+        return ({
+          id: ind * matrixLength + index,
+          width: frameSizes.width / matrixLength,
+          place: { row: ind, column: index },
+          color,
+        });
+      }));
   return modifiedArray.reduce((a, b) => a.concat(b));
 };
 

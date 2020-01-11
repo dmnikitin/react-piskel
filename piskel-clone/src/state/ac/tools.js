@@ -1,4 +1,6 @@
-import { SET_COLOR, SET_ACTIVE_TOOL, SET_PEN_SIZE } from '../variables';
+import {
+  SET_COLOR, SET_ACTIVE_TOOL, SET_PEN_SIZE, SET_CANVAS_SIZE,
+} from '../variables';
 
 const setActiveTool = (value) => ({
   type: SET_ACTIVE_TOOL,
@@ -15,4 +17,11 @@ const setPenSize = (value) => ({
   payload: value,
 });
 
-export { setActiveTool, setColor, setPenSize };
+const setCanvasSize = (value) => ({
+  type: SET_CANVAS_SIZE,
+  payload: value,
+});
+
+export {
+  setActiveTool, setColor, setPenSize, setCanvasSize,
+};

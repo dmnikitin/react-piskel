@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import { setButton } from '../../../state/ac/buttons';
+import setButton from '../../../state/ac/buttons';
 
 function ChangeControl({ tool, onSetButton }) {
   const [isPressed, changePressed] = useState(false);

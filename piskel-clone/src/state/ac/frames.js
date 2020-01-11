@@ -31,4 +31,6 @@ const deleteFrame = (frame) => ({
   payload: frame,
 });
 
-export { setUpdatedFrame, setCurrentFrame, addFrame, deleteFrame, rearrangeFrames };
+export {
+  setUpdatedFrame, setCurrentFrame, addFrame, deleteFrame, rearrangeFrames,
+};

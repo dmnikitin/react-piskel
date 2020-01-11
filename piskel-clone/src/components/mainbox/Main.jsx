@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Framebox from './framebox/framebox';
@@ -10,8 +10,6 @@ import { setActiveTool, setPenSize, setColor } from '../../state/ac/tools';
 import { setCurrentFrame, addFrame, deleteFrame } from '../../state/ac/frames';
 import { createMatrix } from '../../helpers/canvas';
 import { keyboardEvents, frameSizes, penSizes } from '../../assets/data';
-import store from '../../state/store';
-import { saveToLocalStorage } from '../../helpers/localStorageHandler';
 
 const { matrixLength: { basic } } = frameSizes;
 
@@ -31,21 +29,14 @@ function Main(props) {
   } = props;
   let nameInput;
 
-  let isGif = false;
+  const [isGif, changeIsGif] = useState(false);
 
   useEffect(() => {
     nameInput.focus();
   }, []);
 
-  useEffect(() => () => {
-    const state = store.getState();
-    console.log('TCL: Main -> state', state);
-    store.subscribe(() => saveToLocalStorage(state));
-  }, []);
-
   const handleKeyPress = (event) => {
     const e = event.nativeEvent;
-
     const entries = Object.entries(buttons);
     entries.forEach((key) => {
       if (e.key === key[1]) {
@@ -69,18 +60,16 @@ function Main(props) {
           onSetCurrentFrame(id);
         }
         if (key[1] === keyboardEvents.delete) onDeleteFrame(currentFrame);
-
+        if (key[1] === keyboardEvents.exportGif) changeIsGif(!isGif);
         if (key[1] === keyboardEvents.swap) {
           const { alternativeColor, primaryColor } = colors;
           onSetColor(alternativeColor, primaryColor);
         }
         if (key[1] === keyboardEvents.changePenSize) {
           const sizes = Object.keys(penSizes);
-          const value = sizes.indexOf(penSize);
-          onSetPenSize(value < 2 ? sizes[value] : sizes[0]);
-        }
-        if (key[1] === keyboardEvents.exportGif) {
-          isGif = true;
+          const value = sizes.indexOf(penSize) + 1;
+          const final = value < 3 ? sizes[value] : sizes[0];
+          onSetPenSize(final);
         }
       }
     });
@@ -131,4 +120,8 @@ Main.propTypes = {
     primaryColor: PropTypes.string.isRequired,
     alternativeColor: PropTypes.string.isRequired,
   }).isRequired,
+  currentFrame: PropTypes.number.isRequired,
+  frames: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onSetColor: PropTypes.func.isRequired,
+  penSize: PropTypes.string.isRequired,
 };

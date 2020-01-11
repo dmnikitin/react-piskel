@@ -18,7 +18,7 @@ const NavBar = ({ isLoggedIn, history }) => {
           .auth()
           .signInWithPopup(provider)
           .then(() => {
-            history.push('/piskel');
+            history.push('/');
             Auth.setLoggedIn(true);
           })
           .catch((e) => { throw new Error(e.message); });
@@ -35,7 +35,7 @@ const NavBar = ({ isLoggedIn, history }) => {
 
   return (
     <header className="navbar">
-      Piskel app.
+      Piskel clone.
       {isLoggedIn && <button onClick={() => signOut()} className="auth-button" type="button">logout</button>}
       {!isLoggedIn && (
         <button onClick={() => signInWithGoogle()} className="auth-button" type="button">

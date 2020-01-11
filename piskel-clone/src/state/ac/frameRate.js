@@ -5,4 +5,4 @@ const changeFrameRate = (value) => ({
   payload: value,
 });
 
-export { changeFrameRate };
+export default changeFrameRate;

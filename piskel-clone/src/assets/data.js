@@ -13,7 +13,6 @@ const keyboardEvents = {
   colorPicker: 'c',
   allToOneColor: 'm',
   exportGif: 'g',
-  exportApng: 'h',
   swap: 's',
   resizeCanvas: 'r',
   changePenSize: 'z',
@@ -49,14 +48,6 @@ const tools = {
   allToOneColor: 'allToOneColor',
 };
 
-const active = {
-  colors: {
-    primaryColor: colors[1],
-    alternativeColor: colors[0],
-  },
-  activeTool: tools.pen,
-  penSize: penSizes.small,
-};
 
 const frameSizes = {
   width: 512,
@@ -66,7 +57,7 @@ const frameSizes = {
     preview: 4,
   },
   matrixLength: {
-    basic: 32,
+    init: 32,
     ext: 64,
     max: 128,
   },
@@ -75,6 +66,16 @@ const frameSizes = {
     medium: 512,
     large: 1024,
   },
+};
+
+const active = {
+  colors: {
+    primaryColor: colors[1],
+    alternativeColor: colors[0],
+  },
+  activeTool: tools.pen,
+  penSize: penSizes.small,
+  canvasSize: frameSizes.matrixLength.init,
 };
 
 const defaultFrameRate = 12;

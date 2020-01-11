@@ -1,4 +1,4 @@
-import { setButton } from './buttons';
+import setButton from './buttons';
 import { UPDATE_BUTTON } from '../variables';
 
 describe('actions', () => {
@@ -7,8 +7,8 @@ describe('actions', () => {
     const button = 'p';
     const expectedAction = {
       type: UPDATE_BUTTON,
-      payload: { tool, button }
-    }
-    expect(setButton(tool, button)).toEqual(expectedAction)
-  })
-})
+      payload: { tool, button },
+    };
+    expect(setButton(tool, button)).toEqual(expectedAction);
+  });
+});

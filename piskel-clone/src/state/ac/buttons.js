@@ -5,4 +5,4 @@ const setButton = (tool, button) => ({
   payload: { tool, button },
 });
 
-export { setButton };
+export default setButton;

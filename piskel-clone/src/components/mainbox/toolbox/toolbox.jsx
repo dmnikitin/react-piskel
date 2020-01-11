@@ -8,7 +8,7 @@ import Tools from './tools';
 import Pensize from './penSize';
 import CanvasSize from './canvasSize';
 import ChangeControl from './changeControl';
-import { setActiveTool, setPenSize } from '../../../state/ac/tools';
+import { setActiveTool, setPenSize, setCanvasSize } from '../../../state/ac/tools';
 
 const customStyles = {
   content: {
@@ -25,7 +25,13 @@ const customStyles = {
   },
 };
 
-function Toolbox({ buttons, onSetActiveTool, onSetPenSize }) {
+function Toolbox(props) {
+  const {
+    buttons,
+    onSetActiveTool,
+    onSetPenSize,
+    onSetCanvasSize,
+  } = props;
   const [modalIsOpen, setIsOpen] = React.useState(false);
   const openModal = () => setIsOpen(true);
   const closeModal = () => setIsOpen(false);
@@ -37,7 +43,7 @@ function Toolbox({ buttons, onSetActiveTool, onSetPenSize }) {
       <Tools callback={onSetActiveTool} />
       <ColorsBox />
       <Pensize callback={onSetPenSize} />
-      <CanvasSize />
+      <CanvasSize callback={onSetCanvasSize} />
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={closeModal}
@@ -68,6 +74,7 @@ export default connect(
   (dispatch) => ({
     onSetActiveTool: (tool) => dispatch(setActiveTool(tool)),
     onSetPenSize: (size) => dispatch(setPenSize(size)),
+    onSetCanvasSize: (size) => dispatch(setCanvasSize(size)),
   }),
 )(Toolbox);
 
@@ -75,4 +82,5 @@ Toolbox.propTypes = {
   buttons: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSetActiveTool: PropTypes.func.isRequired,
   onSetPenSize: PropTypes.func.isRequired,
+  onSetCanvasSize: PropTypes.func.isRequired,
 };

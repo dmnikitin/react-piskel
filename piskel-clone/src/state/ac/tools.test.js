@@ -8,25 +8,24 @@ describe('actions', () => {
     const expectedAction = {
       type: SET_COLOR,
       payload: { primaryColor, alternativeColor },
-    }
-    expect(setColor(primaryColor, alternativeColor)).toEqual(expectedAction)
-  })
+    };
+    expect(setColor(primaryColor, alternativeColor)).toEqual(expectedAction);
+  });
 
   it('should create an action to set active tool', () => {
     const value = 'bucket';
     const expectedAction = {
       type: SET_ACTIVE_TOOL,
       payload: value,
-    }
-    expect(setActiveTool(value)).toEqual(expectedAction)
-  })
+    };
+    expect(setActiveTool(value)).toEqual(expectedAction);
+  });
   it('should create an action to set pen size', () => {
     const value = 'medium';
     const expectedAction = {
       type: SET_PEN_SIZE,
       payload: value,
-    }
-    expect(setPenSize(value)).toEqual(expectedAction)
-  })
-
-})
+    };
+    expect(setPenSize(value)).toEqual(expectedAction);
+  });
+});

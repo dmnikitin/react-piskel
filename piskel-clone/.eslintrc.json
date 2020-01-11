@@ -40,5 +40,7 @@
       }
     ],
     "import/no-cycle": 0,
+    "import/no-extraneous-dependencies": 0,
+    "jsx-a11y/no-autofocus": 0
   }
 }

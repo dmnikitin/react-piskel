@@ -1,6 +1,6 @@
+import fromEntries from 'object.fromentries';
 import { UPDATE_BUTTON } from '../variables';
 import { keyboardEvents } from '../../assets/data';
-import fromEntries from 'object.fromentries';
 
 const defaultState = keyboardEvents;
 const ButtonsReducer = (state = defaultState, action) => {

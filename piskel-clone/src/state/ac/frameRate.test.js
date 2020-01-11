@@ -1,4 +1,4 @@
-import { changeFrameRate } from './frameRate';
+import changeFrameRate from './frameRate';
 import { CHANGE_FRAMERATE } from '../variables';
 
 describe('actions', () => {
@@ -7,7 +7,7 @@ describe('actions', () => {
     const expectedAction = {
       type: CHANGE_FRAMERATE,
       payload: value,
-    }
-    expect(changeFrameRate(1)).toEqual(expectedAction)
-  })
-})
+    };
+    expect(changeFrameRate(1)).toEqual(expectedAction);
+  });
+});

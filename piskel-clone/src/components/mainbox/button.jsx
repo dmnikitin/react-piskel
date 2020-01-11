@@ -11,7 +11,7 @@ function Button(props) {
   const handleMouseOut = () => changeState(false);
   const handleClick = (e) => callback(e.currentTarget.getAttribute('data'));
   const className = `${state ? 'tooltip-open' : 'tooltip-closed'} tooltip`;
-  const toolTip = `${data}(${buttons[data]})`;
+  const toolTip = `${data}(${buttons[data] ? buttons[data] : 'change'})`;
 
   return (
     <div>

@@ -34,11 +34,8 @@ export function App() {
           <NavBar isLoggedIn={isLoggedIn} />
           {isLoggedIn && <Main />}
           {!isLoggedIn && <LandingPage />}
-          {/* <LandingPage /> */}
         </div>
       </Router>
     </AuthContext.Provider>
   );
 }
-
-

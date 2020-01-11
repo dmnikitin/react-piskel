@@ -5,7 +5,7 @@ import Fullscreen from 'react-full-screen';
 import CCapture from 'ccapture.js';
 import PreviewCanvas from './previewCanvas';
 import Slider from './slider';
-import { changeFrameRate } from '../../../state/ac/frameRate';
+import changeFrameRate from '../../../state/ac/frameRate';
 import './preview.scss';
 
 const frameRateToInterval = (val) => 1000 / val;
