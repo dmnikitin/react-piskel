@@ -56,7 +56,7 @@ function Preview(props) {
     if (frameRate || frames) {
       intervalHandler();
       const newCapt = new CCapture({
-        format: 'gif', framerate: frameRate, verbose: true, workersPath: '../../../../node_modules/ccapture.js/src/',
+        format: 'gif', framerate: frameRate, verbose: true, workersPath: 'src/',
       });
       changeCapturer(newCapt);
       return () => { };

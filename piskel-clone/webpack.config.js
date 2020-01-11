@@ -35,6 +35,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: 'src/index.html',
     }),
+    new CopyWebpackPlugin([{ from: 'src/gif.worker.js', to: 'src/'}]),
     new CopyWebpackPlugin([{ from: 'src/assets', to: 'src/assets' }]),
     new webpack.LoaderOptionsPlugin({
       minimize: true,

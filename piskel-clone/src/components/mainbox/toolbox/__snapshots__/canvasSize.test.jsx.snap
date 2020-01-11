@@ -11,15 +11,18 @@ exports[`canvasSize component renders correctly 1`] = `
     className="toolbox-canvas__buttons"
   >
     <Button
-      data="basic"
+      callback={[Function]}
+      data="32"
       icon="square-o"
     />
     <Button
-      data="medium"
+      callback={[Function]}
+      data="64"
       icon="plus-square-o"
     />
     <Button
-      data="large"
+      callback={[Function]}
+      data="128"
       icon="plus-square"
     />
   </div>
