@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`canvasSize component renders correctly 1`] = `
+<div
+  className="toolbox-canvas"
+>
+  <h3>
+    Choose the canvas size
+  </h3>
+  <div
+    className="toolbox-canvas__buttons"
+  >
+    <Button
+      callback={[Function]}
+      data="32"
+      icon="square-o"
+    />
+    <Button
+      callback={[Function]}
+      data="64"
+      icon="plus-square-o"
+    />
+    <Button
+      callback={[Function]}
+      data="128"
+      icon="plus-square"
+    />
+  </div>
+</div>
+`;

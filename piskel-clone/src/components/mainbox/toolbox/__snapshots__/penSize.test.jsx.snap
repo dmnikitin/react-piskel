@@ -1,0 +1,30 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pensize component renders correctly 1`] = `
+<div
+  className="toolbox-pensize"
+>
+  <h3>
+    Choose the pen size
+  </h3>
+  <div
+    className="toolbox-pensize__buttons"
+  >
+    <Button
+      callback={[Function]}
+      data="small"
+      icon="pencil"
+    />
+    <Button
+      callback={[Function]}
+      data="medium"
+      icon="pencil-square-o"
+    />
+    <Button
+      callback={[Function]}
+      data="large"
+      icon="pencil-square"
+    />
+  </div>
+</div>
+`;

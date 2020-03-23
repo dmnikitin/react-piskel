@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`pensize component renders correctly 1`] = `
+<div
+  className="toolbox-colors-active"
+>
+  <div
+    className="toolbox-colors-active__primary"
+    style={
+      Object {
+        "background": "black",
+      }
+    }
+  />
+  <Button
+    callback={[Function]}
+    data="swap"
+    icon="exchange"
+  />
+  <div
+    className="toolbox-colors-active__alternative"
+    style={
+      Object {
+        "background": "white",
+      }
+    }
+  />
+</div>
+`;

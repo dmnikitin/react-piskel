@@ -1,0 +1,28 @@
+.navbar {
+  background-color: #282c34;
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  font-family: 'Titillium Web', sans-serif;
+
+  button {
+    background-color: transparent;
+    color: white;
+    border: none;
+    border: 1px solid;
+    font-size: small;
+    width: 100px;
+    height: 50px;
+    &:focus {
+      outline: 0;
+    }
+    &:hover {
+      transition: 1s linear;
+      transform: scale(1.2);
+      color:  #282c34;
+      background-color: white;
+    }
+  }
+}

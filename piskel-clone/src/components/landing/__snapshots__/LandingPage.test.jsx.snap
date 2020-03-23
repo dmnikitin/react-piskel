@@ -1,0 +1,97 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`landing page renders correctly 1`] = `
+<div
+  className="landing"
+>
+  <div
+    className="landing-overview"
+  >
+    <h4>
+      This app is a variation of the famous
+      <a
+        href="http://piskelapp.com"
+      >
+        PISKEL
+      </a>
+    </h4>
+    <h5>
+      With this app you can:
+    </h5>
+    <ul>
+      <li>
+         draw sprites using browser Canvas-API 
+      </li>
+      <li>
+         add, delete, duplicate as many sprites as you like 
+      </li>
+      <li>
+         use powerful drawing tools like stroke, bucket, eraser etc
+      </li>
+      <li>
+         set preferred pen size, canvas size, drawing color 
+      </li>
+      <li>
+         set required framerate and watch animation preview (even in full page mode) 
+      </li>
+      <li>
+         navigate with control keyboard buttons with option to change them 
+      </li>
+      <li>
+         export result to filesystem as GIF 
+      </li>
+    </ul>
+  </div>
+  <div
+    className="landing-screen"
+  >
+    <img
+      alt="landing"
+      height="300"
+      src="src/assets/landing.jpg"
+      width="500"
+    />
+  </div>
+  <section
+    className="landing-gifs"
+  >
+    <img
+      alt="gif1"
+      height="200"
+      src="src/assets/1.gif"
+      width="250"
+    />
+    <img
+      alt="gif2"
+      height="200"
+      src="src/assets/2.gif"
+      width="250"
+    />
+    <img
+      alt="gif3"
+      height="200"
+      src="src/assets/3.gif"
+      width="200"
+    />
+    <img
+      alt="gif4"
+      height="200"
+      src="src/assets/4.gif"
+      width="200"
+    />
+  </section>
+  <footer
+    className="landing-footer"
+  >
+     
+    <h5>
+      2020, Dmitrij Nikitin.
+      <a
+        href="https://dmnikitin.github.io/portfolio/"
+      >
+        portfolio
+      </a>
+    </h5>
+  </footer>
+</div>
+`;

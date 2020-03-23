@@ -1,0 +1,46 @@
+{
+  "parser": "babel-eslint",
+  "extends": [
+    "airbnb",
+    "plugin:react/recommended"
+  ],
+  "env": {
+    "browser": true,
+    "node": true,
+    "jest/globals": true,
+    "es6": true
+  },
+  "plugins": [
+    "react",
+    "jsx-a11y",
+    "jest"
+  ],
+  "parserOptions": {
+    "ecmaVersion": 6,
+    "sourceType": "module",
+    "ecmaFeatures": {
+      "jsx": true
+    }
+  },
+  "settings": {
+    "babel-plugin-root-import": {
+      "rootPathPrefix": "~/",
+      "rootPathSuffix": "src/"
+    }
+  },
+  "globals": {
+    "CONFIG": true
+  },
+  "rules": {
+    "linebreak-style": 0,
+    "import/no-unresolved": [
+      2,
+      {
+        "caseSensitive": false
+      }
+    ],
+    "import/no-cycle": 0,
+    "import/no-extraneous-dependencies": 0,
+    "jsx-a11y/no-autofocus": 0
+  }
+}
